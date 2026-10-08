@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="theme-color" content="#042f2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NurseWin" />
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/icons/nursewin-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/nursewin-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>NurseWin - Nursing Tool</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            accent: {
+              500: '#06b6d4',
+              600: '#0891b2',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Custom scrollbar for mobile categories */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .active-pill {
+      background: linear-gradient(135deg, #0d9488, #0891b2);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(13, 148, 136, 0.3);
+    }
+
+    /* NurseWin responsive + PWA/offline enhancements */
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      min-width: 0;
+      overflow-x: hidden;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    button, input, select, textarea { max-width: 100%; }
+    input, select, textarea { font-size: max(16px, 0.875rem); } /* prevents iOS input zoom */
+    .tool-card { min-width: 0; }
+    #workspace-content, .workspace-panel { width: 100%; min-width: 0; }
+    table { max-width: 100%; }
+    @media (max-width: 380px) {
+      main { padding-left: .55rem !important; padding-right: .55rem !important; }
+      #tools-grid { grid-template-columns: 1fr !important; }
+      .tool-card { padding: .7rem !important; }
+      .tool-card h3 { font-size: .78rem !important; }
+      .workspace-panel > div { padding: .8rem !important; border-radius: 1rem !important; }
+      #network-status { padding-left: .35rem; padding-right: .35rem; }
+    }
+    @media (min-width: 381px) and (max-width: 639px) {
+      #tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 640px) and (max-width: 1023px) {
+      #tools-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      #workspace-content { max-width: 1100px; margin: 0 auto; }
+    }
+    @media (orientation: landscape) and (max-height: 600px) {
+      header { position: sticky; }
+      main { padding-top: .5rem !important; padding-bottom: .75rem !important; }
+      .workspace-panel > div { padding-top: .75rem !important; padding-bottom: .75rem !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+    #network-status.offline { border-color: rgba(245,158,11,.35); }
+    #network-status.offline #network-dot { background: #f59e0b; }
+    #network-status.offline #network-label { color: #fbbf24; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-md">
+    <div class="max-w-7xl mx-auto px-2.5 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="showDashboard()">
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center shadow-lg shadow-brand-600/30 border border-brand-400/30">
+          <img src="assets/icons/nursewin-96.png" alt="NurseWin" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-sm sm:text-base font-extrabold tracking-tight bg-gradient-to-r from-brand-400 via-cyan-400 to-teal-200 bg-clip-text text-transparent leading-none">
+              NurseWin
+            </h1>
+            <span class="text-[9px] font-bold uppercase tracking-wider bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded border border-brand-500/30">Tool</span>
+          </div>
+          <p class="text-[10px] text-slate-400 hidden sm:block">Designed for Clinical Reference & Fast Bedside Calculations.</p>
+        </div>
+      </div>
+
+      <!-- Quick Header Actions -->
+      <div class="flex items-center gap-2">
+        <div class="hidden xs:flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/60 text-[11px] text-slate-300">
+          <i class="fa-regular fa-clock text-brand-400 text-xs"></i>
+          <span id="live-time" class="font-mono font-medium">00:00:00</span>
+        </div>
+        <div id="network-status" class="flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/60 text-[10px] font-semibold whitespace-nowrap" title="Connection status">
+          <span id="network-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span id="network-label" class="hidden sm:inline text-emerald-300">Online</span>
+        </div>
+        <button onclick="showDashboard()" id="header-home-btn" class="hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-grip text-brand-400"></i>
+          <span>Dashboard</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-2.5 sm:p-4">
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view" class="space-y-3 sm:space-y-4">
+
+      <!-- Category Filter Section -->
+      <section class="space-y-2.5">
+        <!-- Filter Tabs Horizontal Scrollable Pill Bar -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
+          <button onclick="setCategory('all')" class="cat-btn active-pill px-3 py-1.5 rounded-lg font-semibold shrink-0 transition" data-cat="all">
+            <i class="fa-solid fa-layer-group mr-1"></i>All (11)
+          </button>
+          <button onclick="setCategory('calc')" class="cat-btn bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3 py-1.5 rounded-lg font-medium shrink-0 transition" data-cat="calc">
+            <i class="fa-solid fa-calculator text-brand-400 mr-1"></i>Calculators
+          </button>
+          <button onclick="setCategory('assess')" class="cat-btn bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3 py-1.5 rounded-lg font-medium shrink-0 transition" data-cat="assess">
+            <i class="fa-solid fa-clipboard-check text-cyan-400 mr-1"></i>Assessment
+          </button>
+          <button onclick="setCategory('labs')" class="cat-btn bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3 py-1.5 rounded-lg font-medium shrink-0 transition" data-cat="labs">
+            <i class="fa-solid fa-vial text-teal-400 mr-1"></i>ABG & Labs
+          </button>
+          <button onclick="setCategory('ref')" class="cat-btn bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3 py-1.5 rounded-lg font-medium shrink-0 transition" data-cat="ref">
+            <i class="fa-solid fa-book-medical text-amber-400 mr-1"></i>Cheat Sheets
+          </button>
+        </div>
+      </section>
+
+      <!-- Ultra-Compact Dashboard Cards Grid -->
+      <section id="tools-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+
+        <!-- Tool Card 1: Drug Dosage Calculator -->
+        <div onclick="openTool('drug-dosage')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="calc" data-keywords="drug dosage desire on hand weight mg kg dose volume concentration">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-pills text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">Calc</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">Drug Dosage</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Basic (D ÷ H × V) & Weight-based dose calculations.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>Formula & Mg/Kg</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 2: IV Flow & Drip Rate -->
+        <div onclick="openTool('iv-drip')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="calc" data-keywords="iv drip flow rate gtt min ml hr drops infusion drop factor">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-droplet text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">Calc</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">IV Flow Rate</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Calculate mL/hr infusion and gtt/min drip factors.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>mL/hr & gtt/min</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 3: BMI & Ideal Body Weight -->
+        <div onclick="openTool('bmi-ibw')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="calc" data-keywords="bmi body mass index ideal body weight ibw devine height weight">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-weight-scale text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">Calc</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">BMI & Ideal Weight</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Calculate BMI score and Devine formula IBW.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>BMI & Devine IBW</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 4: Pregnancy & Gestational Age -->
+        <div onclick="openTool('pregnancy')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="calc" data-keywords="pregnancy edd lmp gestational age trimester due date naegele rule">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-person-pregnant text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-pink-400 bg-pink-500/10 px-1.5 py-0.5 rounded border border-pink-500/20">OB Calc</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">EDD & Gestation</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Naegele's due date, gestational age & trimester.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>LMP to EDD</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 5: APGAR Score -->
+        <div onclick="openTool('apgar')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="assess" data-keywords="apgar newborn assessment score appearance pulse grimace activity respiration peds">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-baby text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Scale</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">APGAR Score</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Newborn vital status (0-10) & CPR action banner.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>5 Criteria Scale</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 6: Mean Arterial Pressure (MAP) -->
+        <div onclick="openTool('map-calc')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="calc" data-keywords="map mean arterial pressure sbp dbp blood pressure perfusion cardiac">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-heart-pulse text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">Calc</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">MAP Calculator</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Organ perfusion adequacy check (Target ≥ 65).</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>Perfusion Status</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 7: Parkland Burn Formula -->
+        <div onclick="openTool('parkland')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="calc" data-keywords="parkland burn fluid resuscitation tbsa lactated ringers trauma er ICU">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-fire text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20">Trauma</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">Parkland Burn</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">24h Lactated Ringer's volume & 8h/16h infusion rates.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>Fluid Resuscitation</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 8: Glasgow Coma Scale -->
+        <div onclick="openTool('gcs')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="assess" data-keywords="gcs glasgow coma scale eye verbal motor neuro head injury intubate">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-brain text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">Scale</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">Glasgow Coma Scale</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">E+V+M (3-15) neuro score & injury classification.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>Eye, Verbal, Motor</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 9: ABG Analyzer -->
+        <div onclick="openTool('abg')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="labs" data-keywords="abg arterial blood gas ph paco2 hco3 acidosis alkalosis compensation respiratory metabolic">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-vial-circle-check text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">Labs</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">ABG Analyzer</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Arterial blood gas diagnosis & compensation analyzer.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>Acid-Base Analysis</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 10: Normal Lab Values -->
+        <div onclick="openTool('labs-db')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="labs" data-keywords="labs lab values reference range cbc bmp cmp cardiac electrolytes troponin potassium sodium wbc hgb pt inr">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-flask-vial text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-teal-400 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20">Ref</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">Normal Lab Values</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Reference ranges for CBC, BMP, Coag, and Cardiac labs.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>Searchable Database</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- Tool Card 11: Clinical Cheat Sheets -->
+        <div onclick="openTool('cheatsheets')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="cheat sheets vitals age antidotes injections needle gauge mnemonics mona sample pqrst fast">
+          <div>
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-book-medical text-sm sm:text-base"></i>
+              </div>
+              <span class="text-[9px] font-semibold text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">Cheat Sheet</span>
+            </div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-brand-300 leading-snug line-clamp-1">Clinical Reference</h3>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Vital signs by age, antidotes, injection guide & mnemonics.</p>
+          </div>
+          <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>Quick References</span>
+            <i class="fa-solid fa-chevron-right text-[9px] text-brand-400 group-hover:translate-x-0.5 transition-transform"></i>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- DEDICATED WORKSPACE VIEW (Hidden by default) -->
+    <div id="workspace-view" class="hidden space-y-3">
+      <!-- Top Workspace Navigation Bar -->
+      <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-800">
+        <button onclick="showDashboard()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-brand-400 px-3 py-1.5 rounded-xl border border-slate-800 transition">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>Dashboard</span>
+        </button>
+        <div id="workspace-title-badge" class="flex items-center gap-2">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- WORKSPACE TOOL CONTAINER -->
+      <div id="workspace-content" class="min-h-[400px]">
+        
+        <!-- 1. DRUG DOSAGE TOOL -->
+        <div id="tool-drug-dosage" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-pills"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">Drug Dosage Calculator</h2>
+                <p class="text-[11px] text-slate-400">Calculate desired dose volume & weight-based pediatric/adult dosage.</p>
+              </div>
+            </div>
+
+            <!-- Tab Toggles -->
+            <div class="flex border-b border-slate-800 mb-4 text-xs font-semibold">
+              <button onclick="switchDosageTab('basic')" id="tab-dosage-basic" class="py-2 px-3 text-brand-400 border-b-2 border-brand-500 font-bold flex items-center gap-1">
+                <i class="fa-solid fa-calculator text-xs"></i> Standard (D ÷ H × V)
+              </button>
+              <button onclick="switchDosageTab('weight')" id="tab-dosage-weight" class="py-2 px-3 text-slate-400 hover:text-slate-200 flex items-center gap-1">
+                <i class="fa-solid fa-weight-scale text-xs"></i> Weight-Based (mg/kg)
+              </button>
+            </div>
+
+            <!-- Tab 1: Standard Formula -->
+            <div id="dosage-basic-form" class="space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">Desired Dose (D)</label>
+                  <input type="number" id="dd-desired" placeholder="e.g. 500" oninput="calcBasicDosage()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">Dose On Hand (H)</label>
+                  <input type="number" id="dd-hand" placeholder="e.g. 250" oninput="calcBasicDosage()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">Volume On Hand (V)</label>
+                  <input type="number" id="dd-vol" placeholder="e.g. 5 (mL)" oninput="calcBasicDosage()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Weight-Based Formula -->
+            <div id="dosage-weight-form" class="hidden space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">Dose per Kg (mg/kg)</label>
+                  <input type="number" id="dw-dosekg" placeholder="e.g. 15" oninput="calcWeightDosage()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">Patient Weight (kg)</label>
+                  <input type="number" id="dw-weight" placeholder="e.g. 20" oninput="calcWeightDosage()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-300 mb-1">Concentration (mg/mL)</label>
+                  <input type="number" id="dw-conc" placeholder="e.g. 50" oninput="calcWeightDosage()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Calculation Output Box -->
+            <div id="dosage-result" class="mt-4 p-3 sm:p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Calculated Volume To Administer</span>
+                <button onclick="copyToClipboard('dosage-val-text')" class="text-xs hover:text-white bg-emerald-900/60 px-2 py-0.5 rounded border border-emerald-700/50 flex items-center gap-1">
+                  <i class="fa-regular fa-copy"></i> Copy
+                </button>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black mt-1 text-emerald-300 font-mono" id="dosage-val-text">0 mL</div>
+              <p class="text-[11px] text-emerald-400/80 mt-1" id="dosage-formula-note">Fill in desired dose, on hand dose, and volume to calculate.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. IV FLOW & DRIP RATE TOOL -->
+        <div id="tool-iv-drip" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-droplet"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">IV Flow & Drip Rate Calculator</h2>
+                <p class="text-[11px] text-slate-400">Determine mL/hr pump infusion rate and gtt/min manual drip rate.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Total Volume (mL)</label>
+                <input type="number" id="iv-vol" placeholder="e.g. 1000" oninput="calcIVDrip()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-cyan-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Infusion Time (Hours)</label>
+                <input type="number" id="iv-time" placeholder="e.g. 8" oninput="calcIVDrip()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-cyan-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Drop Factor (gtt/mL)</label>
+                <select id="iv-dfactor" onchange="calcIVDrip()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-cyan-500 outline-none">
+                  <option value="10">10 gtt/mL (Macrodrip)</option>
+                  <option value="15">15 gtt/mL (Macrodrip)</option>
+                  <option value="20" selected>20 gtt/mL (Macrodrip)</option>
+                  <option value="60">60 gtt/mL (Microdrip)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+              <div class="p-3.5 rounded-xl bg-slate-950 border border-cyan-500/30">
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-cyan-400">Infusion Pump Rate</span>
+                <div class="text-2xl font-black text-cyan-300 font-mono mt-0.5" id="iv-mlhr-val">0 mL/hr</div>
+                <span class="text-[10px] text-slate-400">Total Volume ÷ Time (Hours)</span>
+              </div>
+              <div class="p-3.5 rounded-xl bg-slate-950 border border-teal-500/30">
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-teal-400">Manual Drip Rate</span>
+                <div class="text-2xl font-black text-teal-300 font-mono mt-0.5" id="iv-gttmin-val">0 gtt/min</div>
+                <span class="text-[10px] text-slate-400">(Volume × Drop Factor) ÷ Time (Mins)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. BMI & IBW TOOL -->
+        <div id="tool-bmi-ibw" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-weight-scale"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">BMI & Ideal Body Weight (IBW)</h2>
+                <p class="text-[11px] text-slate-400">Body Mass Index & Devine Formula Ideal Body Weight.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Sex</label>
+                <select id="bmi-sex" onchange="calcBMI()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Weight (kg)</label>
+                <input type="number" id="bmi-weight" placeholder="e.g. 70" oninput="calcBMI()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Height (cm)</label>
+                <input type="number" id="bmi-height" placeholder="e.g. 170" oninput="calcBMI()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+              <div class="p-3.5 rounded-xl bg-slate-950 border border-blue-500/30 flex flex-col justify-between">
+                <div>
+                  <span class="text-[11px] font-semibold uppercase tracking-wider text-blue-400">BMI Score</span>
+                  <div class="text-2xl font-black text-blue-300 font-mono mt-0.5" id="bmi-val">--</div>
+                </div>
+                <div class="mt-2" id="bmi-status-badge">
+                  <span class="text-xs px-2 py-0.5 rounded font-semibold bg-slate-800 text-slate-400">Enter Height & Weight</span>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-950 border border-indigo-500/30">
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-indigo-400">Devine Ideal Body Weight</span>
+                <div class="text-2xl font-black text-indigo-300 font-mono mt-0.5" id="ibw-val">-- kg</div>
+                <span class="text-[10px] text-slate-400">Crucial for ARDS tidal volume (6 mL/kg IBW).</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PREGNANCY TOOL -->
+        <div id="tool-pregnancy" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-pink-500/10 text-pink-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-person-pregnant"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">EDD & Gestational Age Calculator</h2>
+                <p class="text-[11px] text-slate-400">Naegele's Rule due date prediction and trimester tracking.</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">First Day of Last Menstrual Period (LMP)</label>
+              <input type="date" id="preg-lmp" onchange="calcPregnancy()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-pink-500 outline-none" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+              <div class="p-3 rounded-xl bg-slate-950 border border-pink-500/30">
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-pink-400">Estimated Due Date</span>
+                <div class="text-base font-bold text-pink-200 mt-1" id="preg-edd">--</div>
+                <span class="text-[9px] text-slate-500">Naegele's (+1yr -3mo +7d)</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-950 border border-purple-500/30">
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-purple-400">Gestational Age</span>
+                <div class="text-base font-bold text-purple-200 mt-1" id="preg-ga">--</div>
+                <span class="text-[9px] text-slate-500">Current weeks + days</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-950 border border-brand-500/30">
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-brand-400">Current Trimester</span>
+                <div class="text-base font-bold text-brand-200 mt-1" id="preg-trimester">--</div>
+                <span class="text-[9px] text-slate-500">1st, 2nd, or 3rd</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. APGAR SCORE TOOL -->
+        <div id="tool-apgar" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-baby"></i>
+                </div>
+                <div>
+                  <h2 class="text-sm sm:text-base font-bold text-slate-100">APGAR Score Calculator</h2>
+                  <p class="text-[11px] text-slate-400">Assess newborn adaptation at 1 and 5 minutes post-birth.</p>
+                </div>
+              </div>
+              <button onclick="resetAPGAR()" class="text-xs text-slate-400 hover:text-slate-200 bg-slate-800 px-2 py-1 rounded border border-slate-700">Reset</button>
+            </div>
+
+            <!-- APGAR Criteria Grid -->
+            <div class="space-y-3 text-xs">
+              <!-- Criterion 1: Appearance -->
+              <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="font-bold text-slate-200 mb-1.5 flex items-center justify-between">
+                  <span>1. Appearance (Skin Color)</span>
+                  <span id="apgar-tag-a" class="text-[10px] text-amber-400 font-mono">0 pts</span>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <button onclick="setApgar('a', 0, this)" class="apgar-btn-a p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">0 - Blue / Pale overall</button>
+                  <button onclick="setApgar('a', 1, this)" class="apgar-btn-a p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">1 - Pink body, blue hands/feet</button>
+                  <button onclick="setApgar('a', 2, this)" class="apgar-btn-a p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">2 - Completely pink</button>
+                </div>
+              </div>
+
+              <!-- Criterion 2: Pulse -->
+              <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="font-bold text-slate-200 mb-1.5 flex items-center justify-between">
+                  <span>2. Pulse (Heart Rate)</span>
+                  <span id="apgar-tag-p" class="text-[10px] text-amber-400 font-mono">0 pts</span>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <button onclick="setApgar('p', 0, this)" class="apgar-btn-p p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">0 - Absent (No pulse)</button>
+                  <button onclick="setApgar('p', 1, this)" class="apgar-btn-p p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">1 - &lt; 100 bpm</button>
+                  <button onclick="setApgar('p', 2, this)" class="apgar-btn-p p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">2 - &ge; 100 bpm</button>
+                </div>
+              </div>
+
+              <!-- Criterion 3: Grimace -->
+              <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="font-bold text-slate-200 mb-1.5 flex items-center justify-between">
+                  <span>3. Grimace (Reflex Irritability)</span>
+                  <span id="apgar-tag-g" class="text-[10px] text-amber-400 font-mono">0 pts</span>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <button onclick="setApgar('g', 0, this)" class="apgar-btn-g p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">0 - No response to stimulation</button>
+                  <button onclick="setApgar('g', 1, this)" class="apgar-btn-g p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">1 - Grimace / weak cry</button>
+                  <button onclick="setApgar('g', 2, this)" class="apgar-btn-g p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">2 - Vigorous cry / cough / sneeze</button>
+                </div>
+              </div>
+
+              <!-- Criterion 4: Activity -->
+              <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="font-bold text-slate-200 mb-1.5 flex items-center justify-between">
+                  <span>4. Activity (Muscle Tone)</span>
+                  <span id="apgar-tag-act" class="text-[10px] text-amber-400 font-mono">0 pts</span>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <button onclick="setApgar('act', 0, this)" class="apgar-btn-act p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">0 - Flaccid / Limp</button>
+                  <button onclick="setApgar('act', 1, this)" class="apgar-btn-act p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">1 - Some flexion of arms/legs</button>
+                  <button onclick="setApgar('act', 2, this)" class="apgar-btn-act p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">2 - Active movement</button>
+                </div>
+              </div>
+
+              <!-- Criterion 5: Respiration -->
+              <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="font-bold text-slate-200 mb-1.5 flex items-center justify-between">
+                  <span>5. Respiration (Breathing Effort)</span>
+                  <span id="apgar-tag-r" class="text-[10px] text-amber-400 font-mono">0 pts</span>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <button onclick="setApgar('r', 0, this)" class="apgar-btn-r p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">0 - Absent (Apneic)</button>
+                  <button onclick="setApgar('r', 1, this)" class="apgar-btn-r p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">1 - Slow / Irregular / Weak cry</button>
+                  <button onclick="setApgar('r', 2, this)" class="apgar-btn-r p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition font-medium">2 - Good, strong cry</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- APGAR Total & Action Banner -->
+            <div id="apgar-banner" class="mt-4 p-3.5 rounded-xl border bg-rose-950/40 border-rose-500/40 text-rose-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total APGAR Score</span>
+                <div class="text-3xl font-black font-mono text-rose-400" id="apgar-total">0 / 10</div>
+              </div>
+              <div class="text-xs sm:text-right" id="apgar-action">
+                <span class="font-bold block text-rose-300">Severely Depressed (Score 0-3)</span>
+                <span class="text-[11px] text-slate-300">Immediate CPR, bag-mask ventilation & emergency resuscitation required.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. MAP CALCULATOR -->
+        <div id="tool-map-calc" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">Mean Arterial Pressure (MAP)</h2>
+                <p class="text-[11px] text-slate-400">Formula: MAP = DBP + ⅓(SBP - DBP). Target ≥ 65 mmHg.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Systolic BP (SBP mmHg)</label>
+                <input type="number" id="map-sbp" placeholder="e.g. 120" oninput="calcMAP()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-rose-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Diastolic BP (DBP mmHg)</label>
+                <input type="number" id="map-dbp" placeholder="e.g. 80" oninput="calcMAP()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-rose-500 outline-none" />
+              </div>
+            </div>
+
+            <div id="map-result-box" class="mt-4 p-4 rounded-xl bg-slate-950 border border-rose-500/30">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-rose-400">Calculated MAP</span>
+                <span id="map-pp-tag" class="text-xs font-mono text-slate-400">Pulse Pressure: -- mmHg</span>
+              </div>
+              <div class="text-3xl font-black text-rose-300 font-mono mt-1" id="map-val">0 mmHg</div>
+              <div id="map-status-text" class="mt-2 text-xs font-semibold text-amber-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Enter valid SBP & DBP values.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. PARKLAND BURN FORMULA -->
+        <div id="tool-parkland" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-fire"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">Parkland Resuscitation Formula</h2>
+                <p class="text-[11px] text-slate-400">Total 24-hour Lactated Ringer's volume for second/third-degree burns.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Patient Weight (kg)</label>
+                <input type="number" id="park-weight" placeholder="e.g. 70" oninput="calcParkland()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-orange-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">% Total Body Surface Area Burn (TBSA%)</label>
+                <input type="number" id="park-tbsa" placeholder="e.g. 30" oninput="calcParkland()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-orange-500 outline-none" />
+              </div>
+            </div>
+
+            <div class="mt-4 space-y-2.5">
+              <div class="p-3 rounded-xl bg-slate-950 border border-orange-500/30">
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-orange-400">Total 24-Hour Volume (Lactated Ringer's)</span>
+                <div class="text-2xl font-black text-orange-300 font-mono mt-0.5" id="park-24h-val">0 mL</div>
+                <span class="text-[10px] text-slate-400">Formula: 4 mL × kg × %TBSA</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="p-3 rounded-xl bg-slate-950 border border-amber-500/30">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400">1st 8 Hours (50% Volume)</span>
+                  <div class="text-lg font-extrabold text-amber-200 font-mono mt-0.5" id="park-8h-vol">0 mL</div>
+                  <div class="text-xs font-bold text-amber-300 font-mono" id="park-8h-rate">Rate: 0 mL/hr</div>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-950 border border-yellow-500/30">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-yellow-400">Next 16 Hours (50% Volume)</span>
+                  <div class="text-lg font-extrabold text-yellow-200 font-mono mt-0.5" id="park-16h-vol">0 mL</div>
+                  <div class="text-xs font-bold text-yellow-300 font-mono" id="park-16h-rate">Rate: 0 mL/hr</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. GLASGOW COMA SCALE (GCS) TOOL -->
+        <div id="tool-gcs" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                  <h2 class="text-sm sm:text-base font-bold text-slate-100">Glasgow Coma Scale (GCS)</h2>
+                  <p class="text-[11px] text-slate-400">Neurological assessment score (3 to 15 points).</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <!-- Eye Opening -->
+              <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                <label class="block font-bold text-purple-300 mb-1">Eye Opening Response (E: 1-4)</label>
+                <select id="gcs-e" onchange="calcGCS()" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-100 focus:ring-2 focus:ring-purple-500 outline-none">
+                  <option value="4">4 - Spontaneous opening</option>
+                  <option value="3">3 - To sound / speech</option>
+                  <option value="2">2 - To pressure / pain</option>
+                  <option value="1">1 - None</option>
+                </select>
+              </div>
+
+              <!-- Verbal Response -->
+              <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                <label class="block font-bold text-purple-300 mb-1">Verbal Response (V: 1-5)</label>
+                <select id="gcs-v" onchange="calcGCS()" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-100 focus:ring-2 focus:ring-purple-500 outline-none">
+                  <option value="5">5 - Oriented</option>
+                  <option value="4">4 - Confused</option>
+                  <option value="3">3 - Inappropriate words</option>
+                  <option value="2">2 - Incomprehensible sounds</option>
+                  <option value="1">1 - None</option>
+                </select>
+              </div>
+
+              <!-- Motor Response -->
+              <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                <label class="block font-bold text-purple-300 mb-1">Motor Response (M: 1-6)</label>
+                <select id="gcs-m" onchange="calcGCS()" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-100 focus:ring-2 focus:ring-purple-500 outline-none">
+                  <option value="6">6 - Obeys commands</option>
+                  <option value="5">5 - Localizes pain</option>
+                  <option value="4">4 - Normal flexion (withdrawal)</option>
+                  <option value="3">3 - Abnormal flexion (decorticate posture)</option>
+                  <option value="2">2 - Extension (decerebrate posture)</option>
+                  <option value="1">1 - None</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- GCS Output Banner -->
+            <div id="gcs-banner" class="mt-4 p-3.5 rounded-xl border bg-purple-950/40 border-purple-500/30 flex items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-purple-400">Total GCS Score</span>
+                <div class="text-3xl font-black text-purple-300 font-mono" id="gcs-total">15 / 15</div>
+                <span class="text-[10px] text-purple-400 font-mono" id="gcs-subtext">E4 V5 M6</span>
+              </div>
+              <div class="text-right">
+                <span id="gcs-severity" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 inline-block">Mild Brain Injury (13-15)</span>
+                <p id="gcs-note" class="text-[10px] text-slate-400 mt-1">Normal baseline response.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. ABG ANALYZER TOOL -->
+        <div id="tool-abg" class="workspace-panel hidden max-w-2xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-vial-circle-check"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">Arterial Blood Gas (ABG) Analyzer</h2>
+                <p class="text-[11px] text-slate-400">Acid-Base status diagnosis & compensation level calculator.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">pH (7.35 - 7.45)</label>
+                <input type="number" step="0.01" id="abg-ph" placeholder="e.g. 7.31" oninput="calcABG()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-red-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">PaCO2 (35 - 45 mmHg)</label>
+                <input type="number" id="abg-paco2" placeholder="e.g. 50" oninput="calcABG()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-red-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">HCO3 (22 - 26 mEq/L)</label>
+                <input type="number" id="abg-hco3" placeholder="e.g. 25" oninput="calcABG()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs sm:text-sm text-slate-100 focus:ring-2 focus:ring-red-500 outline-none" />
+              </div>
+            </div>
+
+            <!-- ABG Result Output -->
+            <div id="abg-result" class="mt-4 p-4 rounded-xl bg-slate-950 border border-red-500/30 space-y-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-red-400">Diagnostic Breakdown</span>
+              <div class="text-lg sm:text-xl font-extrabold text-red-300" id="abg-diag">Normal ABG Values</div>
+              <p class="text-xs text-slate-300" id="abg-explanation">Enter pH, PaCO2, and HCO3 to perform full clinical step-by-step analysis.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. SEARCHABLE LAB VALUES DATABASE TOOL -->
+        <div id="tool-labs-db" class="workspace-panel hidden max-w-4xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-flask-vial"></i>
+                </div>
+                <div>
+                  <h2 class="text-sm sm:text-base font-bold text-slate-100">Normal Lab Values Database</h2>
+                  <p class="text-[11px] text-slate-400">Reference ranges and clinical notes for high/low levels.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lab Filter & Search -->
+            <div class="flex flex-col sm:flex-row gap-2 mb-3">
+              <input type="text" id="lab-search" placeholder="Filter lab name (e.g., Potassium, WBC, Troponin)..." onkeyup="filterLabs()" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none" />
+              <div class="flex gap-1 overflow-x-auto no-scrollbar text-xs">
+                <button onclick="filterLabCat('all')" class="lab-cat-btn active-pill px-2.5 py-1 rounded-lg shrink-0" data-labcat="all">All</button>
+                <button onclick="filterLabCat('cbc')" class="lab-cat-btn bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg shrink-0" data-labcat="cbc">CBC</button>
+                <button onclick="filterLabCat('cmp')" class="lab-cat-btn bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg shrink-0" data-labcat="cmp">BMP/CMP</button>
+                <button onclick="filterLabCat('cardiac')" class="lab-cat-btn bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg shrink-0" data-labcat="cardiac">Cardiac</button>
+                <button onclick="filterLabCat('coag')" class="lab-cat-btn bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg shrink-0" data-labcat="coag">Coagulation</button>
+              </div>
+            </div>
+
+            <!-- Lab Table Grid -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-200">
+                <thead class="bg-slate-950 text-slate-400 text-[10px] uppercase font-bold border-b border-slate-800">
+                  <tr>
+                    <th class="p-2">Lab Test</th>
+                    <th class="p-2">Reference Range</th>
+                    <th class="p-2 hidden md:table-cell">Clinical Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="labs-tbody" class="divide-y divide-slate-800/60 font-medium">
+                  <!-- Injected dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. CLINICAL CHEAT SHEETS TOOL -->
+        <div id="tool-cheatsheets" class="workspace-panel hidden max-w-4xl mx-auto space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-book-medical"></i>
+              </div>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-100">Clinical Reference & Cheat Sheets</h2>
+                <p class="text-[11px] text-slate-400">Vital signs by age group, antidotes, injection angles & mnemonics.</p>
+              </div>
+            </div>
+
+            <!-- Cheat Sheet Sub-tabs -->
+            <div class="flex gap-1.5 border-b border-slate-800 pb-2 overflow-x-auto no-scrollbar text-xs font-semibold">
+              <button onclick="switchCheatTab('vitals')" id="ctab-vitals" class="cheat-tab-btn text-brand-400 border-b-2 border-brand-500 py-1 px-3 shrink-0">Vital Signs by Age</button>
+              <button onclick="switchCheatTab('injections')" id="ctab-injections" class="cheat-tab-btn text-slate-400 py-1 px-3 shrink-0">Injections & Needles</button>
+              <button onclick="switchCheatTab('antidotes')" id="ctab-antidotes" class="cheat-tab-btn text-slate-400 py-1 px-3 shrink-0">Antidotes & Emergencies</button>
+              <button onclick="switchCheatTab('mnemonics')" id="ctab-mnemonics" class="cheat-tab-btn text-slate-400 py-1 px-3 shrink-0">Nursing Mnemonics</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="mt-3 text-xs">
+              
+              <!-- Tab A: Vitals -->
+              <div id="csec-vitals" class="cheat-sec space-y-2">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-950 text-slate-400 text-[10px] uppercase font-bold border-b border-slate-800">
+                      <tr>
+                        <th class="p-2">Age Group</th>
+                        <th class="p-2">Heart Rate (bpm)</th>
+                        <th class="p-2">Resp Rate (bpm)</th>
+                        <th class="p-2">Systolic BP (mmHg)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 font-medium text-slate-200">
+                      <tr><td class="p-2 text-brand-400 font-bold">Neonate (0 - 28 days)</td><td class="p-2">100 - 160</td><td class="p-2">30 - 60</td><td class="p-2">60 - 90</td></tr>
+                      <tr><td class="p-2 text-brand-400 font-bold">Infant (1 - 12 mos)</td><td class="p-2">90 - 150</td><td class="p-2">25 - 55</td><td class="p-2">70 - 100</td></tr>
+                      <tr><td class="p-2 text-brand-400 font-bold">Toddler (1 - 3 yrs)</td><td class="p-2">80 - 130</td><td class="p-2">20 - 30</td><td class="p-2">80 - 105</td></tr>
+                      <tr><td class="p-2 text-brand-400 font-bold">Preschool (3 - 6 yrs)</td><td class="p-2">70 - 120</td><td class="p-2">20 - 25</td><td class="p-2">85 - 110</td></tr>
+                      <tr><td class="p-2 text-brand-400 font-bold">School Age (6 - 12 yrs)</td><td class="p-2">70 - 110</td><td class="p-2">16 - 22</td><td class="p-2">90 - 120</td></tr>
+                      <tr><td class="p-2 text-brand-400 font-bold">Adult (18+ yrs)</td><td class="p-2">60 - 100</td><td class="p-2">12 - 20</td><td class="p-2">90 - 120</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab B: Injections -->
+              <div id="csec-injections" class="cheat-sec hidden space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-emerald-400 block mb-1">Intramuscular (IM)</span>
+                    <ul class="text-[11px] space-y-1 text-slate-300">
+                      <li><strong>Angle:</strong> 90°</li>
+                      <li><strong>Gauge:</strong> 20 - 25G</li>
+                      <li><strong>Needle:</strong> 1 to 1.5 inches</li>
+                      <li><strong>Sites:</strong> Deltoid (≤ 1 mL), Ventrogluteal, Vastus Lateralis (peds).</li>
+                    </ul>
+                  </div>
+
+                  <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-cyan-400 block mb-1">Subcutaneous (SC)</span>
+                    <ul class="text-[11px] space-y-1 text-slate-300">
+                      <li><strong>Angle:</strong> 45° or 90° (if thick fold)</li>
+                      <li><strong>Gauge:</strong> 25 - 31G</li>
+                      <li><strong>Needle:</strong> 3/8 to 5/8 inch</li>
+                      <li><strong>Sites:</strong> Abdomen, outer upper arm, anterior thigh.</li>
+                    </ul>
+                  </div>
+
+                  <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-purple-400 block mb-1">Intradermal (ID)</span>
+                    <ul class="text-[11px] space-y-1 text-slate-300">
+                      <li><strong>Angle:</strong> 10° - 15°</li>
+                      <li><strong>Gauge:</strong> 25 - 27G</li>
+                      <li><strong>Needle:</strong> 1/2 inch</li>
+                      <li><strong>Sites:</strong> Inner forearm, upper back. Creates wheal/bleb.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab C: Antidotes -->
+              <div id="csec-antidotes" class="cheat-sec hidden space-y-2">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-950 text-slate-400 text-[10px] uppercase font-bold border-b border-slate-800">
+                      <tr>
+                        <th class="p-2">Toxin / Medication</th>
+                        <th class="p-2">Antidote / Reversal Agent</th>
+                        <th class="p-2">Key Nursing Action</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 font-medium text-slate-200">
+                      <tr><td class="p-2 font-bold text-rose-400">Acetaminophen (Paracetamol)</td><td class="p-2 text-emerald-400 font-bold">N-Acetylcysteine (Mucomyst)</td><td class="p-2">Most effective within 8 hrs of ingestion.</td></tr>
+                      <tr><td class="p-2 font-bold text-rose-400">Opioids (Morphine, Fentanyl)</td><td class="p-2 text-emerald-400 font-bold">Naloxone (Narcan)</td><td class="p-2">Monitor RR; short half-life may require repeated doses.</td></tr>
+                      <tr><td class="p-2 font-bold text-rose-400">Heparin</td><td class="p-2 text-emerald-400 font-bold">Protamine Sulfate</td><td class="p-2">Administer slowly IV (1 mg per 100 units heparin).</td></tr>
+                      <tr><td class="p-2 font-bold text-rose-400">Warfarin (Coumadin)</td><td class="p-2 text-emerald-400 font-bold">Vitamin K (Phytonadione) / FFP</td><td class="p-2">Monitor INR value before administration.</td></tr>
+                      <tr><td class="p-2 font-bold text-rose-400">Benzodiazepines (Ativan, Valium)</td><td class="p-2 text-emerald-400 font-bold">Flumazenil (Romazicon)</td><td class="p-2">Caution: May induce seizures in chronic users.</td></tr>
+                      <tr><td class="p-2 font-bold text-rose-400">Digoxin</td><td class="p-2 text-emerald-400 font-bold">Digoxin Immune Fab (Digibind)</td><td class="p-2">Monitor for hypokalemia & severe dysrhythmias.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab D: Mnemonics -->
+              <div id="csec-mnemonics" class="cheat-sec hidden space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-amber-400 text-sm block mb-1">MONA (Chest Pain / MI)</span>
+                    <ul class="space-y-1 text-slate-300 text-[11px]">
+                      <li><strong class="text-amber-300">M:</strong> Morphine (for unrelieved pain & anxiety)</li>
+                      <li><strong class="text-amber-300">O:</strong> Oxygen (if SpO₂ < 90%)</li>
+                      <li><strong class="text-amber-300">N:</strong> Nitroglycerin (vasodilation)</li>
+                      <li><strong class="text-amber-300">A:</strong> Aspirin (162-325 mg chewed)</li>
+                    </ul>
+                  </div>
+
+                  <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-cyan-400 text-sm block mb-1">SAMPLE (Health History)</span>
+                    <ul class="space-y-1 text-slate-300 text-[11px]">
+                      <li><strong class="text-cyan-300">S:</strong> Signs & Symptoms</li>
+                      <li><strong class="text-cyan-300">A:</strong> Allergies</li>
+                      <li><strong class="text-cyan-300">M:</strong> Medications</li>
+                      <li><strong class="text-cyan-300">P:</strong> Past Medical History</li>
+                      <li><strong class="text-cyan-300">L:</strong> Last Oral Intake</li>
+                      <li><strong class="text-cyan-300">E:</strong> Events Leading to Illness</li>
+                    </ul>
+                  </div>
+
+                  <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-pink-400 text-sm block mb-1">PQRST (Pain Assessment)</span>
+                    <ul class="space-y-1 text-slate-300 text-[11px]">
+                      <li><strong class="text-pink-300">P:</strong> Provoking / Palliating factors</li>
+                      <li><strong class="text-pink-300">Q:</strong> Quality of pain (sharp, dull, throbbing)</li>
+                      <li><strong class="text-pink-300">R:</strong> Region & Radiation</li>
+                      <li><strong class="text-pink-300">S:</strong> Severity (0 to 10 scale)</li>
+                      <li><strong class="text-pink-300">T:</strong> Timing (onset, duration, frequency)</li>
+                    </ul>
+                  </div>
+
+                  <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-emerald-400 text-sm block mb-1">FAST (Stroke Assessment)</span>
+                    <ul class="space-y-1 text-slate-300 text-[11px]">
+                      <li><strong class="text-emerald-300">F:</strong> Facial Droop</li>
+                      <li><strong class="text-emerald-300">A:</strong> Arm Drift</li>
+                      <li><strong class="text-emerald-300">S:</strong> Speech Difficulty</li>
+                      <li><strong class="text-emerald-300">T:</strong> Time to call emergency response</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 border-t border-slate-800 mt-auto py-2.5 text-center text-[11px] text-slate-500 px-3">
+    <p>© 2026 • Developed & Maintained by Erwin R. Alincastre</p>
+  </footer>
+
+  <script>
+    // Live Clock Display
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('live-time').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Category Filters
+    let currentCategory = 'all';
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = 'cat-btn active-pill px-3 py-1.5 rounded-lg font-semibold shrink-0 transition';
+        } else {
+          btn.className = 'cat-btn bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3 py-1.5 rounded-lg font-medium shrink-0 transition';
+        }
+      });
+      filterTools();
+    }
+
+    function filterTools() {
+      document.querySelectorAll('.tool-card').forEach(card => {
+        const catMatch = currentCategory === 'all' || card.dataset.category === currentCategory;
+        card.classList.toggle('hidden', !catMatch);
+      });
+    }
+
+    function openTool(toolId) {
+      document.getElementById('dashboard-view').classList.add('hidden');
+      document.getElementById('workspace-view').classList.remove('hidden');
+      document.getElementById('header-home-btn').classList.remove('hidden');
+
+      // Hide all panels
+      document.querySelectorAll('.workspace-panel').forEach(p => p.classList.add('hidden'));
+
+      // Show selected panel
+      const target = document.getElementById('tool-' + toolId);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+
+      // Scroll top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showDashboard() {
+      document.getElementById('workspace-view').classList.add('hidden');
+      document.getElementById('dashboard-view').classList.remove('hidden');
+      document.getElementById('header-home-btn').classList.add('hidden');
+    }
+
+    // 1. DRUG DOSAGE CALCULATOR JS
+    let currentDosageTab = 'basic';
+    function switchDosageTab(tab) {
+      currentDosageTab = tab;
+      const basicBtn = document.getElementById('tab-dosage-basic');
+      const weightBtn = document.getElementById('tab-dosage-weight');
+      const basicForm = document.getElementById('dosage-basic-form');
+      const weightForm = document.getElementById('dosage-weight-form');
+
+      if (tab === 'basic') {
+        basicBtn.className = 'py-2 px-3 text-brand-400 border-b-2 border-brand-500 font-bold flex items-center gap-1';
+        weightBtn.className = 'py-2 px-3 text-slate-400 hover:text-slate-200 flex items-center gap-1';
+        basicForm.classList.remove('hidden');
+        weightForm.classList.add('hidden');
+        calcBasicDosage();
+      } else {
+        weightBtn.className = 'py-2 px-3 text-brand-400 border-b-2 border-brand-500 font-bold flex items-center gap-1';
+        basicBtn.className = 'py-2 px-3 text-slate-400 hover:text-slate-200 flex items-center gap-1';
+        weightForm.classList.remove('hidden');
+        basicForm.classList.add('hidden');
+        calcWeightDosage();
+      }
+    }
+
+    function calcBasicDosage() {
+      const d = parseFloat(document.getElementById('dd-desired').value);
+      const h = parseFloat(document.getElementById('dd-hand').value);
+      const v = parseFloat(document.getElementById('dd-vol').value);
+
+      if (d > 0 && h > 0 && v > 0) {
+        const result = (d / h) * v;
+        document.getElementById('dosage-val-text').innerText = `${result.toFixed(2)} mL`;
+        document.getElementById('dosage-formula-note').innerText = `Formula: (${d} ÷ ${h}) × ${v} = ${result.toFixed(2)} mL`;
+      } else {
+        document.getElementById('dosage-val-text').innerText = '0 mL';
+        document.getElementById('dosage-formula-note').innerText = 'Fill in desired dose, on hand dose, and volume.';
+      }
+    }
+
+    function calcWeightDosage() {
+      const doseKg = parseFloat(document.getElementById('dw-dosekg').value);
+      const weight = parseFloat(document.getElementById('dw-weight').value);
+      const conc = parseFloat(document.getElementById('dw-conc').value);
+
+      if (doseKg > 0 && weight > 0 && conc > 0) {
+        const totalDose = doseKg * weight;
+        const volume = totalDose / conc;
+        document.getElementById('dosage-val-text').innerText = `${volume.toFixed(2)} mL`;
+        document.getElementById('dosage-formula-note').innerText = `Total Dose: ${totalDose.toFixed(1)} mg (${doseKg} × ${weight}kg) → Vol: ${volume.toFixed(2)} mL`;
+      } else {
+        document.getElementById('dosage-val-text').innerText = '0 mL';
+        document.getElementById('dosage-formula-note').innerText = 'Fill in dose/kg, weight, and concentration.';
+      }
+    }
+
+    // 2. IV FLOW & DRIP RATE JS
+    function calcIVDrip() {
+      const vol = parseFloat(document.getElementById('iv-vol').value);
+      const timeHrs = parseFloat(document.getElementById('iv-time').value);
+      const dfactor = parseFloat(document.getElementById('iv-dfactor').value);
+
+      if (vol > 0 && timeHrs > 0) {
+        const mlhr = vol / timeHrs;
+        const gttmin = (vol * dfactor) / (timeHrs * 60);
+        document.getElementById('iv-mlhr-val').innerText = `${Math.round(mlhr)} mL/hr`;
+        document.getElementById('iv-gttmin-val').innerText = `${Math.round(gttmin)} gtt/min`;
+      } else {
+        document.getElementById('iv-mlhr-val').innerText = '0 mL/hr';
+        document.getElementById('iv-gttmin-val').innerText = '0 gtt/min';
+      }
+    }
+
+    // 3. BMI & IBW JS
+    function calcBMI() {
+      const weight = parseFloat(document.getElementById('bmi-weight').value);
+      const height = parseFloat(document.getElementById('bmi-height').value);
+      const sex = document.getElementById('bmi-sex').value;
+
+      if (weight > 0 && height > 0) {
+        const heightM = height / 100;
+        const bmi = weight / (heightM * heightM);
+        document.getElementById('bmi-val').innerText = bmi.toFixed(1);
+
+        // Status Badge
+        const badge = document.getElementById('bmi-status-badge');
+        if (bmi < 18.5) {
+          badge.innerHTML = `<span class="text-xs px-2 py-0.5 rounded font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">Underweight (&lt; 18.5)</span>`;
+        } else if (bmi <= 24.9) {
+          badge.innerHTML = `<span class="text-xs px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Normal (18.5 - 24.9)</span>`;
+        } else if (bmi <= 29.9) {
+          badge.innerHTML = `<span class="text-xs px-2 py-0.5 rounded font-bold bg-orange-500/20 text-orange-400 border border-orange-500/30">Overweight (25 - 29.9)</span>`;
+        } else {
+          badge.innerHTML = `<span class="text-xs px-2 py-0.5 rounded font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">Obese (&ge; 30)</span>`;
+        }
+
+        // Devine IBW
+        const heightInches = height / 2.54;
+        const inchesOver60 = Math.max(0, heightInches - 60);
+        let ibw = 0;
+        if (sex === 'male') {
+          ibw = 50 + (2.3 * inchesOver60);
+        } else {
+          ibw = 45.5 + (2.3 * inchesOver60);
+        }
+        document.getElementById('ibw-val').innerText = `${ibw.toFixed(1)} kg`;
+      } else {
+        document.getElementById('bmi-val').innerText = '--';
+        document.getElementById('ibw-val').innerText = '-- kg';
+        document.getElementById('bmi-status-badge').innerHTML = `<span class="text-xs px-2 py-0.5 rounded font-semibold bg-slate-800 text-slate-400">Enter Height & Weight</span>`;
+      }
+    }
+
+    // 4. PREGNANCY JS
+    function calcPregnancy() {
+      const lmpVal = document.getElementById('preg-lmp').value;
+      if (!lmpVal) return;
+
+      const lmpDate = new Date(lmpVal);
+      if (isNaN(lmpDate.getTime())) return;
+
+      // EDD: +280 days
+      const eddDate = new Date(lmpDate.getTime() + (280 * 24 * 60 * 60 * 1000));
+      document.getElementById('preg-edd').innerText = eddDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      // Gestational Age
+      const today = new Date();
+      const diffMs = today.getTime() - lmpDate.getTime();
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays >= 0) {
+        const weeks = Math.floor(diffDays / 7);
+        const days = diffDays % 7;
+        document.getElementById('preg-ga').innerText = `${weeks}w ${days}d`;
+
+        // Trimester
+        if (weeks < 14) {
+          document.getElementById('preg-trimester').innerText = '1st Trimester';
+        } else if (weeks < 28) {
+          document.getElementById('preg-trimester').innerText = '2nd Trimester';
+        } else {
+          document.getElementById('preg-trimester').innerText = '3rd Trimester';
+        }
+      } else {
+        document.getElementById('preg-ga').innerText = 'LMP is in future';
+        document.getElementById('preg-trimester').innerText = '--';
+      }
+    }
+
+    // 5. APGAR SCORE JS
+    const apgarScores = { a: 0, p: 0, g: 0, act: 0, r: 0 };
+
+    function setApgar(crit, pts, btnElem) {
+      apgarScores[crit] = pts;
+
+      // Highlight button group
+      document.querySelectorAll(`.apgar-btn-${crit}`).forEach(b => {
+        b.className = `apgar-btn-${crit} p-2 rounded-lg bg-slate-900 border border-slate-800 text-left transition font-medium`;
+      });
+      btnElem.className = `apgar-btn-${crit} p-2 rounded-lg bg-amber-500/20 border border-amber-500/50 text-amber-300 text-left transition font-bold`;
+
+      document.getElementById(`apgar-tag-${crit}`).innerText = `${pts} pts`;
+      updateApgarTotal();
+    }
+
+    function updateApgarTotal() {
+      const total = apgarScores.a + apgarScores.p + apgarScores.g + apgarScores.act + apgarScores.r;
+      document.getElementById('apgar-total').innerText = `${total} / 10`;
+
+      const banner = document.getElementById('apgar-banner');
+      const action = document.getElementById('apgar-action');
+
+      if (total >= 7) {
+        banner.className = 'mt-4 p-3.5 rounded-xl border bg-emerald-950/40 border-emerald-500/40 text-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2';
+        document.getElementById('apgar-total').className = 'text-3xl font-black font-mono text-emerald-400';
+        action.innerHTML = `<span class="font-bold block text-emerald-300">Normal / Reassuring (Score 7-10)</span><span class="text-[11px] text-slate-300">Routine postnatal care, suctioning & warming as needed.</span>`;
+      } else if (total >= 4) {
+        banner.className = 'mt-4 p-3.5 rounded-xl border bg-amber-950/40 border-amber-500/40 text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2';
+        document.getElementById('apgar-total').className = 'text-3xl font-black font-mono text-amber-400';
+        action.innerHTML = `<span class="font-bold block text-amber-300">Moderately Depressed (Score 4-6)</span><span class="text-[11px] text-slate-300">Requires stimulation, oxygen administration & tactile support.</span>`;
+      } else {
+        banner.className = 'mt-4 p-3.5 rounded-xl border bg-rose-950/40 border-rose-500/40 text-rose-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2';
+        document.getElementById('apgar-total').className = 'text-3xl font-black font-mono text-rose-400';
+        action.innerHTML = `<span class="font-bold block text-rose-300">Severely Depressed (Score 0-3)</span><span class="text-[11px] text-slate-300">Immediate CPR, bag-mask ventilation & emergency resuscitation required.</span>`;
+      }
+    }
+
+    function resetAPGAR() {
+      apgarScores.a = 0; apgarScores.p = 0; apgarScores.g = 0; apgarScores.act = 0; apgarScores.r = 0;
+      ['a', 'p', 'g', 'act', 'r'].forEach(crit => {
+        document.getElementById(`apgar-tag-${crit}`).innerText = '0 pts';
+        document.querySelectorAll(`.apgar-btn-${crit}`).forEach(b => {
+          b.className = `apgar-btn-${crit} p-2 rounded-lg bg-slate-900 border border-slate-800 text-left transition font-medium`;
+        });
+      });
+      updateApgarTotal();
+    }
+
+    // 6. MAP JS
+    function calcMAP() {
+      const sbp = parseFloat(document.getElementById('map-sbp').value);
+      const dbp = parseFloat(document.getElementById('map-dbp').value);
+
+      if (sbp > 0 && dbp > 0) {
+        const map = dbp + ((sbp - dbp) / 3);
+        const pp = sbp - dbp;
+        document.getElementById('map-val').innerText = `${map.toFixed(1)} mmHg`;
+        document.getElementById('map-pp-tag').innerText = `Pulse Pressure: ${pp.toFixed(0)} mmHg`;
+
+        const status = document.getElementById('map-status-text');
+        if (map >= 65) {
+          status.className = 'mt-2 text-xs font-semibold text-emerald-400 flex items-center gap-1.5';
+          status.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>Adequate Organ Perfusion (MAP &ge; 65 mmHg)</span>`;
+        } else {
+          status.className = 'mt-2 text-xs font-semibold text-rose-400 flex items-center gap-1.5';
+          status.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><span>Inadequate Perfusion! MAP &lt; 65 mmHg (Risk of organ ischemia)</span>`;
+        }
+      } else {
+        document.getElementById('map-val').innerText = '0 mmHg';
+        document.getElementById('map-pp-tag').innerText = 'Pulse Pressure: -- mmHg';
+        document.getElementById('map-status-text').className = 'mt-2 text-xs font-semibold text-amber-400 flex items-center gap-1.5';
+        document.getElementById('map-status-text').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><span>Enter valid SBP & DBP values.</span>`;
+      }
+    }
+
+    // 7. PARKLAND BURN JS
+    function calcParkland() {
+      const weight = parseFloat(document.getElementById('park-weight').value);
+      const tbsa = parseFloat(document.getElementById('park-tbsa').value);
+
+      if (weight > 0 && tbsa > 0) {
+        const totalVol = 4 * weight * tbsa;
+        const halfVol = totalVol / 2;
+        const rate8h = halfVol / 8;
+        const rate16h = halfVol / 16;
+
+        document.getElementById('park-24h-val').innerText = `${totalVol.toLocaleString()} mL`;
+        document.getElementById('park-8h-vol').innerText = `${halfVol.toLocaleString()} mL`;
+        document.getElementById('park-8h-rate').innerText = `Rate: ${Math.round(rate8h)} mL/hr`;
+        document.getElementById('park-16h-vol').innerText = `${halfVol.toLocaleString()} mL`;
+        document.getElementById('park-16h-rate').innerText = `Rate: ${Math.round(rate16h)} mL/hr`;
+      } else {
+        document.getElementById('park-24h-val').innerText = '0 mL';
+        document.getElementById('park-8h-vol').innerText = '0 mL';
+        document.getElementById('park-8h-rate').innerText = 'Rate: 0 mL/hr';
+        document.getElementById('park-16h-vol').innerText = '0 mL';
+        document.getElementById('park-16h-rate').innerText = 'Rate: 0 mL/hr';
+      }
+    }
+
+    // 8. GCS JS
+    function calcGCS() {
+      const e = parseInt(document.getElementById('gcs-e').value);
+      const v = parseInt(document.getElementById('gcs-v').value);
+      const m = parseInt(document.getElementById('gcs-m').value);
+
+      const total = e + v + m;
+      document.getElementById('gcs-total').innerText = `${total} / 15`;
+      document.getElementById('gcs-subtext').innerText = `E${e} V${v} M${m}`;
+
+      const sev = document.getElementById('gcs-severity');
+      const note = document.getElementById('gcs-note');
+
+      if (total >= 13) {
+        sev.className = 'text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 inline-block';
+        sev.innerText = 'Mild Brain Injury (13-15)';
+        note.innerText = 'Keep under monitoring; check neuro vital signs.';
+      } else if (total >= 9) {
+        sev.className = 'text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-300 inline-block';
+        sev.innerText = 'Moderate Brain Injury (9-12)';
+        note.innerText = 'Close neurological observation & CT scan evaluation.';
+      } else {
+        sev.className = 'text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-300 inline-block';
+        sev.innerText = 'Severe Brain Injury (3-8)';
+        note.innerText = 'GCS ≤ 8: Prepare for airway protection & intubation!';
+      }
+    }
+
+    // 9. ABG ANALYZER JS
+    function calcABG() {
+      const ph = parseFloat(document.getElementById('abg-ph').value);
+      const paco2 = parseFloat(document.getElementById('abg-paco2').value);
+      const hco3 = parseFloat(document.getElementById('abg-hco3').value);
+
+      if (!ph || !paco2 || !hco3) {
+        document.getElementById('abg-diag').innerText = 'Normal ABG Values';
+        document.getElementById('abg-explanation').innerText = 'Enter pH, PaCO2, and HCO3 to perform full clinical analysis.';
+        return;
+      }
+
+      let diag = '';
+      let exp = '';
+
+      // Check Normal
+      if (ph >= 7.35 && ph <= 7.45 && paco2 >= 35 && paco2 <= 45 && hco3 >= 22 && hco3 <= 26) {
+        diag = 'Normal Arterial Blood Gas';
+        exp = 'All parameters (pH, PaCO2, HCO3) are within standard clinical ranges.';
+      } else if (ph < 7.35) {
+        // Acidemia
+        if (paco2 > 45 && hco3 >= 22 && hco3 <= 26) {
+          diag = 'Uncompensated Respiratory Acidosis';
+          exp = 'pH is Acidic (< 7.35) and PaCO2 is High (> 45 mmHg). HCO3 is Normal.';
+        } else if (paco2 > 45 && hco3 > 26) {
+          diag = 'Partially Compensated Respiratory Acidosis';
+          exp = 'pH is Acidic (< 7.35), PaCO2 is High (> 45 mmHg), and Kidneys are compensating (HCO3 > 26 mEq/L).';
+        } else if (hco3 < 22 && paco2 >= 35 && paco2 <= 45) {
+          diag = 'Uncompensated Metabolic Acidosis';
+          exp = 'pH is Acidic (< 7.35) and HCO3 is Low (< 22 mEq/L). PaCO2 is Normal.';
+        } else if (hco3 < 22 && paco2 < 35) {
+          diag = 'Partially Compensated Metabolic Acidosis';
+          exp = 'pH is Acidic (< 7.35), HCO3 is Low (< 22 mEq/L), and Lungs are blowing off CO2 (PaCO2 < 35 mmHg).';
+        } else if (paco2 > 45 && hco3 < 22) {
+          diag = 'Combined (Mixed) Respiratory & Metabolic Acidosis';
+          exp = 'Severe acidemia driven by both high PaCO2 and low HCO3 levels.';
+        } else {
+          diag = 'Acidemia (Complex Pattern)';
+          exp = 'pH is low. Clinical correlation recommended.';
+        }
+      } else if (ph > 7.45) {
+        // Alkalemia
+        if (paco2 < 35 && hco3 >= 22 && hco3 <= 26) {
+          diag = 'Uncompensated Respiratory Alkalosis';
+          exp = 'pH is Alkalotic (> 7.45) and PaCO2 is Low (< 35 mmHg). HCO3 is Normal.';
+        } else if (paco2 < 35 && hco3 < 22) {
+          diag = 'Partially Compensated Respiratory Alkalosis';
+          exp = 'pH is Alkalotic (> 7.45), PaCO2 is Low (< 35 mmHg), and Kidneys are compensating (HCO3 < 22 mEq/L).';
+        } else if (hco3 > 26 && paco2 >= 35 && paco2 <= 45) {
+          diag = 'Uncompensated Metabolic Alkalosis';
+          exp = 'pH is Alkalotic (> 7.45) and HCO3 is High (> 26 mEq/L). PaCO2 is Normal.';
+        } else if (hco3 > 26 && paco2 > 45) {
+          diag = 'Partially Compensated Metabolic Alkalosis';
+          exp = 'pH is Alkalotic (> 7.45), HCO3 is High (> 26 mEq/L), and Lungs are retaining CO2 (PaCO2 > 45 mmHg).';
+        } else if (paco2 < 35 && hco3 > 26) {
+          diag = 'Combined (Mixed) Respiratory & Metabolic Alkalosis';
+          exp = 'Severe alkalemia driven by both low PaCO2 and high HCO3 levels.';
+        } else {
+          diag = 'Alkalemia (Complex Pattern)';
+          exp = 'pH is elevated. Clinical correlation recommended.';
+        }
+      } else {
+        // Fully compensated (pH 7.35 - 7.45 but abnormal PaCO2 & HCO3)
+        if (ph < 7.40) {
+          // Compensated Acidosis
+          if (paco2 > 45 && hco3 > 26) {
+            diag = 'Fully Compensated Respiratory Acidosis';
+            exp = 'Normal pH (acidic side < 7.40) with elevated PaCO2 and compensated high HCO3.';
+          } else if (hco3 < 22 && paco2 < 35) {
+            diag = 'Fully Compensated Metabolic Acidosis';
+            exp = 'Normal pH (acidic side < 7.40) with low HCO3 and compensated low PaCO2.';
+          }
+        } else {
+          // Compensated Alkalosis
+          if (paco2 < 35 && hco3 < 22) {
+            diag = 'Fully Compensated Respiratory Alkalosis';
+            exp = 'Normal pH (alkalotic side > 7.40) with low PaCO2 and compensated low HCO3.';
+          } else if (hco3 > 26 && paco2 > 45) {
+            diag = 'Fully Compensated Metabolic Alkalosis';
+            exp = 'Normal pH (alkalotic side > 7.40) with high HCO3 and compensated high PaCO2.';
+          }
+        }
+      }
+
+      document.getElementById('abg-diag').innerText = diag;
+      document.getElementById('abg-explanation').innerText = exp;
+    }
+
+    // 10. LAB DATABASE JS
+    const labDatabase = [
+      { name: 'White Blood Cells (WBC)', cat: 'cbc', range: '4,500 - 11,000 / µL', note: 'High: Infection/Leukemia; Low: Immunosuppression/Neutropenia.' },
+      { name: 'Red Blood Cells (RBC)', cat: 'cbc', range: 'M: 4.5 - 5.9 / F: 4.1 - 5.1 M/µL', note: 'High: Polycythemia; Low: Anemia/Hemorrhage.' },
+      { name: 'Hemoglobin (Hgb)', cat: 'cbc', range: 'M: 13.8 - 17.2 / F: 12.1 - 15.1 g/dL', note: 'Transfusion threshold typically < 7.0 g/dL.' },
+      { name: 'Hematocrit (Hct)', cat: 'cbc', range: 'M: 40.7% - 50.3% / F: 36.1% - 44.3%', note: 'Roughly 3x Hemoglobin level.' },
+      { name: 'Platelets (Plt)', cat: 'cbc', range: '150,000 - 450,000 / µL', note: 'Thrombocytopenia (< 50k increases bleeding risk).' },
+      { name: 'Sodium (Na+)', cat: 'cmp', range: '135 - 145 mEq/L', note: 'Hyponatremia causes neuro changes & seizures.' },
+      { name: 'Potassium (K+)', cat: 'cmp', range: '3.5 - 5.0 mEq/L', note: 'Critical: Cardiac dysrhythmias if < 3.0 or > 5.5.' },
+      { name: 'Chloride (Cl-)', cat: 'cmp', range: '96 - 106 mEq/L', note: 'Maintains fluid & acid-base balance.' },
+      { name: 'Bicarbonate (HCO3)', cat: 'cmp', range: '22 - 26 mEq/L', note: 'Metabolic buffer indicator.' },
+      { name: 'Blood Urea Nitrogen (BUN)', cat: 'cmp', range: '7 - 20 mg/dL', note: 'High: Dehydration, renal failure, GI bleed.' },
+      { name: 'Creatinine (Cr)', cat: 'cmp', range: '0.6 - 1.2 mg/dL', note: 'Gold standard renal function metric.' },
+      { name: 'Glucose (Fast)', cat: 'cmp', range: '70 - 99 mg/dL', note: 'Critical low < 70 mg/dL (Hypoglycemia).' },
+      { name: 'Troponin I', cat: 'cardiac', range: '< 0.04 ng/mL', note: 'Elevated in Acute Myocardial Infarction.' },
+      { name: 'BNP (B-type Natriuretic)', cat: 'cardiac', range: '< 100 pg/mL', note: '> 400 pg/mL indicates Heart Failure.' },
+      { name: 'Prothrombin Time (PT)', cat: 'coag', range: '11 - 13.5 seconds', note: 'Warfarin therapy monitoring.' },
+      { name: 'INR (International Ratio)', cat: 'coag', range: '0.8 - 1.1 (Therapeutic 2.0 - 3.0)', note: 'Warfarin target usually 2.0 - 3.0.' },
+      { name: 'aPTT (Activated PTT)', cat: 'coag', range: '30 - 40 seconds (Heparin 1.5 - 2.5x)', note: 'Heparin therapy monitoring.' }
+    ];
+
+    let currentLabCat = 'all';
+
+    function renderLabs() {
+      const tbody = document.getElementById('labs-tbody');
+      const query = document.getElementById('lab-search').value.toLowerCase().trim();
+      tbody.innerHTML = '';
+
+      labDatabase.forEach(lab => {
+        const catMatch = currentLabCat === 'all' || lab.cat === currentLabCat;
+        const searchMatch = query === '' || lab.name.toLowerCase().includes(query) || lab.note.toLowerCase().includes(query);
+
+        if (catMatch && searchMatch) {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-800/40 transition';
+          tr.innerHTML = `
+            <td class="p-2 font-bold text-teal-300">${lab.name}</td>
+            <td class="p-2 font-mono text-slate-100">${lab.range}</td>
+            <td class="p-2 text-slate-400 hidden md:table-cell">${lab.note}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+
+    function filterLabCat(cat) {
+      currentLabCat = cat;
+      document.querySelectorAll('.lab-cat-btn').forEach(btn => {
+        if (btn.dataset.labcat === cat) {
+          btn.className = 'lab-cat-btn active-pill px-2.5 py-1 rounded-lg shrink-0 font-bold';
+        } else {
+          btn.className = 'lab-cat-btn bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg shrink-0 font-medium';
+        }
+      });
+      renderLabs();
+    }
+
+    function filterLabs() {
+      renderLabs();
+    }
+
+    // 11. CHEAT SHEETS JS
+    function switchCheatTab(sec) {
+      document.querySelectorAll('.cheat-tab-btn').forEach(btn => {
+        btn.className = 'cheat-tab-btn text-slate-400 py-1 px-3 shrink-0';
+      });
+      document.getElementById('ctab-' + sec).className = 'cheat-tab-btn text-brand-400 border-b-2 border-brand-500 py-1 px-3 shrink-0 font-bold';
+
+      document.querySelectorAll('.cheat-sec').forEach(s => s.classList.add('hidden'));
+      document.getElementById('csec-' + sec).classList.remove('hidden');
+    }
+
+    // Utility: Copy to Clipboard
+    function copyToClipboard(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+
+      const btn = event.currentTarget;
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i> Copied!`;
+      setTimeout(() => { btn.innerHTML = orig; }, 1500);
+    }
+
+    // Initialize Labs Database table on startup
+    window.onload = function() {
+      renderLabs();
+    };
+
+    // PWA + online/offline status
+    (function () {
+      const status = document.getElementById('network-status');
+      const label = document.getElementById('network-label');
+
+      function updateNetworkStatus() {
+        const online = navigator.onLine;
+        if (!status || !label) return;
+        status.classList.toggle('offline', !online);
+        label.textContent = online ? 'Online' : 'Offline';
+        label.className = online
+          ? 'hidden sm:inline text-emerald-300'
+          : 'hidden sm:inline text-amber-300';
+        status.title = online
+          ? 'Online — NurseWin can sync/load online resources.'
+          : 'Offline — NurseWin is using cached/local resources.';
+      }
+
+      window.addEventListener('online', updateNetworkStatus);
+      window.addEventListener('offline', updateNetworkStatus);
+      updateNetworkStatus();
+
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('./sw.js').catch(function (err) {
+            console.warn('NurseWin service worker registration failed:', err);
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
