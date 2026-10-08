@@ -173,6 +173,14 @@
   
     .kidney-icon-wrap { overflow: hidden; flex: 0 0 auto; }
     .kidney-svg { width: 72%; height: 72%; display: block; }
+
+    @media (max-width: 420px) {
+      #network-status { padding-left: .35rem !important; padding-right: .35rem !important; }
+      #network-status #network-label { display: none !important; }
+      header .max-w-7xl > div:last-child { gap: .25rem !important; }
+      header .max-w-7xl > div:last-child > button,
+      header .max-w-7xl > div:last-child > a { padding-left: .4rem !important; padding-right: .4rem !important; }
+    }
 </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
@@ -205,6 +213,14 @@
           <span id="network-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
           <span id="network-label" class="hidden sm:inline text-emerald-300">Online</span>
         </div>
+        <button type="button" onclick="openIOSGuide()" class="inline-flex items-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded-lg border border-slate-700/60 text-[10px] font-semibold whitespace-nowrap transition" title="iOS Home Screen Guide">
+          <i class="fa-brands fa-apple text-slate-200"></i>
+          <span class="hidden sm:inline">iOS Guide</span>
+        </button>
+        <a href="./nursewintool.apk" class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-2.5 py-1 rounded-lg border border-brand-500/50 text-[10px] font-bold whitespace-nowrap transition" title="Download NurseWin Android App">
+          <i class="fa-brands fa-android"></i>
+          <span class="hidden sm:inline">Download App</span>
+        </a>
         <button onclick="showDashboard()" id="header-home-btn" class="hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
           <i class="fa-solid fa-grip text-brand-400"></i>
           <span>Dashboard</span>
@@ -1818,6 +1834,78 @@
         });
       }
     })();
-  </script>
+  
+    function openIOSGuide() {
+      const modal = document.getElementById('ios-guide-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeIOSGuide() {
+      const modal = document.getElementById('ios-guide-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeIOSGuide();
+    });
+
+    document.getElementById('ios-guide-modal')?.addEventListener('click', function(e) {
+      if (e.target === this) closeIOSGuide();
+    });
+</script>
+
+  <!-- iOS Install Guide Modal -->
+  <div id="ios-guide-modal" class="hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-100">
+            <i class="fa-brands fa-apple"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100">Install NurseWin on iPhone</h3>
+            <p class="text-[10px] text-slate-400">Add NurseWin to your Home Screen</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeIOSGuide()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 space-y-3 text-xs text-slate-300">
+        <div class="flex gap-3">
+          <span class="w-6 h-6 rounded-full bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold shrink-0">1</span>
+          <p>Open the NurseWin website in <b class="text-slate-100">Safari</b> on your iPhone.</p>
+        </div>
+        <div class="flex gap-3">
+          <span class="w-6 h-6 rounded-full bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold shrink-0">2</span>
+          <p>Tap the <b class="text-slate-100">Share</b> button.</p>
+        </div>
+        <div class="flex gap-3">
+          <span class="w-6 h-6 rounded-full bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold shrink-0">3</span>
+          <p>Select <b class="text-slate-100">Add to Home Screen</b>.</p>
+        </div>
+        <div class="flex gap-3">
+          <span class="w-6 h-6 rounded-full bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold shrink-0">4</span>
+          <p>Tap <b class="text-slate-100">Add</b>. NurseWin will appear on your Home Screen using the NurseWin icon.</p>
+        </div>
+        <div class="mt-3 p-3 rounded-xl bg-brand-950/50 border border-brand-500/20 text-[11px] text-brand-200">
+          <i class="fa-solid fa-circle-info mr-1"></i>
+          For the best install experience, use the HTTPS GitHub Pages version.
+        </div>
+      </div>
+
+      <div class="px-4 py-3 border-t border-slate-800 flex justify-end gap-2">
+        <button type="button" onclick="closeIOSGuide()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700">Close</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
