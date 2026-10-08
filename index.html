@@ -254,9 +254,79 @@
         width: 100%;
       }
     }
+
+    /* Final view-state guard: never allow dashboard and workspace to coexist. */
+    body[data-view="workspace"] #dashboard-view { display: none !important; }
+    body[data-view="dashboard"] #workspace-view { display: none !important; }
+
+
+    @media (max-width: 639px) {
+      body.nw-mobile-tool-open {
+        overflow: hidden !important;
+      }
+      body.nw-mobile-tool-open > main {
+        overflow: hidden !important;
+        position: relative;
+      }
+      body.nw-mobile-tool-open > main #dashboard-view {
+        display: none !important;
+      }
+      body.nw-mobile-tool-open > main #workspace-view {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: var(--nw-header-height, 52px) !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        background: #020617;
+        z-index: 35;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      }
+      body.nw-mobile-tool-open > main #workspace-content {
+        min-height: 0 !important;
+      }
+    }
+
 </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <script>
+    (function () {
+      const KEY = 'nursewin-v11-cache-reset';
+      if (!('serviceWorker' in navigator)) return;
+      if (sessionStorage.getItem(KEY)) return;
+
+      window.addEventListener('load', async function () {
+        try {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          const oldRegs = registrations.filter(r => {
+            const url = (r.active && r.active.scriptURL) || (r.waiting && r.waiting.scriptURL) || (r.installing && r.installing.scriptURL) || '';
+            return url && url.endsWith('/sw.js');
+          });
+
+          if (oldRegs.length) {
+            sessionStorage.setItem(KEY, '1');
+            await Promise.all(oldRegs.map(r => r.unregister()));
+            const keys = await caches.keys();
+            await Promise.all(keys.map(k => caches.delete(k)));
+            location.reload();
+          } else {
+            sessionStorage.setItem(KEY, '1');
+          }
+        } catch (e) {
+          console.warn('NurseWin cache reset skipped:', e);
+        }
+      });
+    })();
+  </script>
+
+<body data-view="dashboard" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
 
   <!-- Top Navigation Header -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-md">
@@ -1366,30 +1436,45 @@
       setTimeout(topNow, 300);
     }
 
+    function setMobileToolMode(enabled) {
+      const header = document.querySelector('body > header');
+      if (enabled) {
+        const h = header ? Math.ceil(header.getBoundingClientRect().height) : 52;
+        document.documentElement.style.setProperty('--nw-header-height', h + 'px');
+        document.body.classList.add('nw-mobile-tool-open');
+      } else {
+        document.body.classList.remove('nw-mobile-tool-open');
+      }
+    }
+
     function openTool(toolId) {
       const dashboard = document.getElementById('dashboard-view');
       const workspace = document.getElementById('workspace-view');
       const homeBtn = document.getElementById('header-home-btn');
       const mainScroller = document.querySelector('body > main');
 
-      // IMPORTANT for mobile: remove the dashboard from the layout completely.
-      // Do not rely only on Tailwind's .hidden class.
+      document.body.setAttribute('data-view', 'workspace');
+
+      // Explicitly remove the dashboard from the layout.
       if (dashboard) {
         dashboard.style.display = 'none';
+        dashboard.classList.add('hidden');
         dashboard.setAttribute('aria-hidden', 'true');
       }
+
+      // Hide every tool, then reveal only the requested one.
+      document.querySelectorAll('.workspace-panel').forEach(p => {
+        p.classList.add('hidden');
+        p.style.display = 'none';
+      });
+
       if (workspace) {
         workspace.style.display = 'block';
         workspace.classList.remove('hidden');
         workspace.setAttribute('aria-hidden', 'false');
       }
-      if (homeBtn) homeBtn.classList.remove('hidden');
 
-      // Show only the selected calculator.
-      document.querySelectorAll('.workspace-panel').forEach(p => {
-        p.classList.add('hidden');
-        p.style.display = 'none';
-      });
+      if (homeBtn) homeBtn.classList.remove('hidden');
 
       const target = document.getElementById('tool-' + toolId);
       if (target) {
@@ -1397,28 +1482,35 @@
         target.style.display = 'block';
       }
 
-      // The main element is the mobile scroll container.
-      if (mainScroller) mainScroller.scrollTop = 0;
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
+      // On phones, the workspace is a dedicated fixed viewport below the header.
+      // On PC/laptop, keep the normal document behavior.
+      const isMobile = window.matchMedia('(max-width: 639px)').matches;
+      if (isMobile) {
+        setMobileToolMode(true);
+        if (mainScroller) mainScroller.scrollTop = 0;
+        if (workspace) workspace.scrollTop = 0;
 
-      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (workspace) workspace.scrollTop = 0;
+          const firstVisible = document.querySelector('.workspace-panel:not(.hidden)');
+          if (firstVisible) firstVisible.scrollIntoView({ block: 'start', behavior: 'auto' });
+        });
+      } else {
+        setMobileToolMode(false);
         if (mainScroller) mainScroller.scrollTop = 0;
         window.scrollTo(0, 0);
-      });
-      setTimeout(() => {
-        if (mainScroller) mainScroller.scrollTop = 0;
-        window.scrollTo(0, 0);
-      }, 100);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
     }
-
 
     function showDashboard() {
       const dashboard = document.getElementById('dashboard-view');
       const workspace = document.getElementById('workspace-view');
       const homeBtn = document.getElementById('header-home-btn');
-      const mainScroller = document.querySelector('body > main');
+
+      document.body.setAttribute('data-view', 'dashboard');
+      setMobileToolMode(false);
 
       if (workspace) {
         workspace.style.display = 'none';
@@ -1432,11 +1524,7 @@
       }
       if (homeBtn) homeBtn.classList.add('hidden');
 
-      document.querySelectorAll('.workspace-panel').forEach(p => {
-        p.classList.add('hidden');
-        p.style.display = 'none';
-      });
-
+      const mainScroller = document.querySelector('body > main');
       if (mainScroller) mainScroller.scrollTop = 0;
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
@@ -2003,6 +2091,16 @@
 
     document.getElementById('ios-guide-modal')?.addEventListener('click', function(e) {
       if (e.target === this) closeIOSGuide();
+    });
+
+    window.addEventListener('resize', function () {
+      const isMobile = window.matchMedia('(max-width: 639px)').matches;
+      const toolOpen = document.body.getAttribute('data-view') === 'workspace';
+      if (toolOpen && isMobile) {
+        setMobileToolMode(true);
+      } else if (!isMobile) {
+        setMobileToolMode(false);
+      }
     });
 </script>
 
