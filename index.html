@@ -181,6 +181,46 @@
       header .max-w-7xl > div:last-child > button,
       header .max-w-7xl > div:last-child > a { padding-left: .4rem !important; padding-right: .4rem !important; }
     }
+
+    /* Phone dashboard: use the empty lower screen area instead of leaving a large gap. */
+    @media (max-width: 639px) {
+      #dashboard-view {
+        min-height: calc(100dvh - 105px);
+        display: flex;
+        flex-direction: column;
+      }
+      #tools-grid {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: calc(100dvh - 125px);
+        grid-template-rows: repeat(6, minmax(0, 1fr)) !important;
+        grid-auto-rows: minmax(0, 1fr);
+        align-items: stretch;
+      }
+      #tools-grid .tool-card {
+        height: 100%;
+        min-height: 0;
+      }
+    }
+
+    /* Very small phones: keep the cards compact but still fill the available height. */
+    @media (max-width: 380px) {
+      #tools-grid {
+        height: calc(100dvh - 120px);
+      }
+    }
+
+    /* Landscape phones should not force six tall rows. */
+    @media (max-width: 639px) and (orientation: landscape) {
+      #dashboard-view { min-height: auto; }
+      #tools-grid {
+        height: auto;
+        grid-template-rows: none !important;
+        grid-auto-rows: minmax(120px, auto);
+      }
+      #tools-grid .tool-card { height: auto; min-height: 120px; }
+    }
+
 </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
