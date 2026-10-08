@@ -221,6 +221,39 @@
       #tools-grid .tool-card { height: auto; min-height: 120px; }
     }
 
+
+    @media (max-width: 639px) {
+      html, body {
+        height: 100%;
+        height: 100dvh;
+        overflow: hidden;
+      }
+      body {
+        min-height: 100dvh !important;
+      }
+      body > main {
+        min-height: 0 !important;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+      }
+    }
+
+
+    /* NurseWin mobile navigation hard reset */
+    @media (max-width: 639px) {
+      body > main {
+        scroll-padding-top: 0 !important;
+      }
+      #workspace-view {
+        width: 100%;
+        min-height: 0;
+      }
+      #dashboard-view {
+        width: 100%;
+      }
+    }
 </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
@@ -272,7 +305,7 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-2.5 sm:p-4">
 
     <!-- DASHBOARD VIEW -->
-    <div id="dashboard-view" class="space-y-3 sm:space-y-4">
+    <div id="dashboard-view" class="space-y-3 sm:space-y-4" style="display:block;" aria-hidden="false">
 
 
       <!-- Ultra-Compact Dashboard Cards Grid -->
@@ -504,7 +537,7 @@
     </div>
 
     <!-- DEDICATED WORKSPACE VIEW (Hidden by default) -->
-    <div id="workspace-view" class="hidden space-y-3">
+    <div id="workspace-view" class="hidden space-y-3" style="display:none;" aria-hidden="true">
       <!-- Top Workspace Navigation Bar -->
       <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-800">
         <button onclick="showDashboard()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-brand-400 px-3 py-1.5 rounded-xl border border-slate-800 transition">
@@ -1314,29 +1347,102 @@
     updateClock();
 
     // Dashboard navigation
+    function forcePageTop() {
+      const mainScroller = document.querySelector('body > main');
+
+      const topNow = () => {
+        if (mainScroller) mainScroller.scrollTop = 0;
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      };
+
+      topNow();
+      requestAnimationFrame(() => {
+        topNow();
+        requestAnimationFrame(topNow);
+      });
+      setTimeout(topNow, 120);
+      setTimeout(topNow, 300);
+    }
+
     function openTool(toolId) {
-      document.getElementById('dashboard-view').classList.add('hidden');
-      document.getElementById('workspace-view').classList.remove('hidden');
-      document.getElementById('header-home-btn').classList.remove('hidden');
+      const dashboard = document.getElementById('dashboard-view');
+      const workspace = document.getElementById('workspace-view');
+      const homeBtn = document.getElementById('header-home-btn');
+      const mainScroller = document.querySelector('body > main');
 
-      // Hide all panels
-      document.querySelectorAll('.workspace-panel').forEach(p => p.classList.add('hidden'));
+      // IMPORTANT for mobile: remove the dashboard from the layout completely.
+      // Do not rely only on Tailwind's .hidden class.
+      if (dashboard) {
+        dashboard.style.display = 'none';
+        dashboard.setAttribute('aria-hidden', 'true');
+      }
+      if (workspace) {
+        workspace.style.display = 'block';
+        workspace.classList.remove('hidden');
+        workspace.setAttribute('aria-hidden', 'false');
+      }
+      if (homeBtn) homeBtn.classList.remove('hidden');
 
-      // Show selected panel
+      // Show only the selected calculator.
+      document.querySelectorAll('.workspace-panel').forEach(p => {
+        p.classList.add('hidden');
+        p.style.display = 'none';
+      });
+
       const target = document.getElementById('tool-' + toolId);
       if (target) {
         target.classList.remove('hidden');
+        target.style.display = 'block';
       }
 
-      // Scroll top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // The main element is the mobile scroll container.
+      if (mainScroller) mainScroller.scrollTop = 0;
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+
+      requestAnimationFrame(() => {
+        if (mainScroller) mainScroller.scrollTop = 0;
+        window.scrollTo(0, 0);
+      });
+      setTimeout(() => {
+        if (mainScroller) mainScroller.scrollTop = 0;
+        window.scrollTo(0, 0);
+      }, 100);
     }
 
+
     function showDashboard() {
-      document.getElementById('workspace-view').classList.add('hidden');
-      document.getElementById('dashboard-view').classList.remove('hidden');
-      document.getElementById('header-home-btn').classList.add('hidden');
+      const dashboard = document.getElementById('dashboard-view');
+      const workspace = document.getElementById('workspace-view');
+      const homeBtn = document.getElementById('header-home-btn');
+      const mainScroller = document.querySelector('body > main');
+
+      if (workspace) {
+        workspace.style.display = 'none';
+        workspace.classList.add('hidden');
+        workspace.setAttribute('aria-hidden', 'true');
+      }
+      if (dashboard) {
+        dashboard.style.display = 'block';
+        dashboard.classList.remove('hidden');
+        dashboard.setAttribute('aria-hidden', 'false');
+      }
+      if (homeBtn) homeBtn.classList.add('hidden');
+
+      document.querySelectorAll('.workspace-panel').forEach(p => {
+        p.classList.add('hidden');
+        p.style.display = 'none';
+      });
+
+      if (mainScroller) mainScroller.scrollTop = 0;
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     }
+
 
     // 1. DRUG DOSAGE CALCULATOR JS
     let currentDosageTab = 'basic';
