@@ -1,6 +1,6 @@
 {
-    "version":  "1.0.0",
-    "url":  "https://github.com/nmax07152020-sudo/nursewintool/releases/download/ota-v1.0.0/ota-v1.0.0.zip",
-    "checksum":  "5eadc0210ce7d7f06af82a14d23c1e8526de18089cc5b3a91bcceb2603e84813",
-    "notes":  "type of insulin"
+    "version":  "1.0.1",
+    "url":  "https://github.com/nmax07152020-sudo/nursewintool/releases/download/ota-v1.0.1/ota-v1.0.1.zip",
+    "checksum":  "49d75163349ad31db1f35ba9b0b0aa1bb2e77bcadd8eee8b672555eb0911be23",
+    "notes":  "types of insulin"
 }
