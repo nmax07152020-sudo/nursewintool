@@ -1,8 +1,9 @@
 {
+  "id": "./",
   "name": "NurseWin - Nursing Tool",
   "short_name": "NurseWin",
-  "description": "NurseWin Nursing Tool - clinical calculators and references.",
-  "start_url": "./index.html",
+  "description": "Clinical Reference & Fast Bedside Calculations.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -13,13 +14,13 @@
       "src": "assets/icons/nursewin-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "assets/icons/nursewin-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
