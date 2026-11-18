@@ -702,6 +702,20 @@
           </div>
         </div>
 
+ 
+<!-- Tool Card 15: Types of Insulin -->
+<div onclick="openTool('insulin-types')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-cyan-400/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="insulin types rapid acting short acting regular intermediate nph long acting glargine ultra long degludec onset peak duration basal bolus diabetes">
+ <div>
+  <div class="flex items-center justify-between gap-1.5 mb-2">
+   <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"><i class="fa-solid fa-syringe text-sm sm:text-base"></i></div>
+   <span class="text-[9px] font-semibold text-emerald-300 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">Clinical Reference</span>
+  </div>
+  <h3 class="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-cyan-200 leading-snug">Types of Insulin</h3>
+  <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">Compare onset, peak, duration, examples and common clinical uses.</p>
+ </div>
+ <div class="mt-2.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium"><span>5 Insulin Action Profiles</span><i class="fa-solid fa-chevron-right text-[9px] text-cyan-300 group-hover:translate-x-0.5 transition-transform"></i></div>
+</div>
+
 </section>
 
     </div>
@@ -2343,6 +2357,225 @@
             if (empty) empty.classList.toggle('hidden', visible > 0);
           }
         </script>
+
+
+<!-- 16. TYPES OF INSULIN REFERENCE -->
+<div id="tool-insulin-types" class="workspace-panel hidden max-w-7xl mx-auto space-y-4">
+ <section class="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-slate-950 via-emerald-950/40 to-slate-900 shadow-xl p-4 sm:p-5">
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+   <div class="max-w-2xl">
+    <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-200 mb-2"><i class="fa-solid fa-syringe"></i> NURSEWIN CLINICAL REFERENCE</div>
+    <h2 class="text-xl sm:text-2xl font-black text-white">Types of Insulin</h2>
+    <p class="text-xs text-slate-300 mt-1">Compare insulin action profiles, common examples, clinical uses and nursing considerations.</p>
+   </div>
+   <div class="rounded-xl border border-emerald-400/20 bg-slate-950/70 p-3 min-w-[220px]">
+    <div class="text-[9px] uppercase tracking-widest text-emerald-300 font-bold mb-1">Two broad roles</div>
+    <div class="grid grid-cols-2 gap-2 text-center">
+     <div class="rounded-lg bg-slate-900 p-2"><strong class="block text-sm text-white">Bolus</strong><span class="text-[9px] text-slate-400">Meal / correction</span></div>
+     <div class="rounded-lg bg-slate-900 p-2"><strong class="block text-sm text-white">Basal</strong><span class="text-[9px] text-slate-400">Background</span></div>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <div class="relative">
+  <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+  <input id="insulin-search" type="search" oninput="filterInsulin(this.value)" placeholder="Search insulin type, example, onset or common use..." class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-3 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-400"/>
+ </div>
+
+ <div class="rounded-xl border border-slate-700 bg-slate-900/80 p-3">
+  <div class="flex items-center justify-between gap-2 mb-2"><h3 class="text-sm font-extrabold text-white">Insulin Action Comparison</h3><span class="text-[9px] text-slate-400">Approximate SC action</span></div>
+  <div class="overflow-x-auto">
+   <table class="w-full min-w-[650px] text-left text-[10px]">
+    <thead><tr class="text-cyan-300 border-b border-slate-700"><th class="py-2 pr-3">Type</th><th class="py-2 pr-3">Onset</th><th class="py-2 pr-3">Peak</th><th class="py-2 pr-3">Duration</th><th class="py-2">Examples</th></tr></thead>
+    <tbody class="text-slate-200 divide-y divide-slate-800">
+     <tr><td class="py-2 pr-3 font-semibold">Rapid-acting</td><td>10–30 min</td><td>30–90 min</td><td>3–5 h</td><td>Lispro, Aspart, Glulisine</td></tr>
+     <tr><td class="py-2 pr-3 font-semibold">Short-acting</td><td>30–60 min</td><td>2–4 h</td><td>5–8 h</td><td>Regular</td></tr>
+     <tr><td class="py-2 pr-3 font-semibold">Intermediate</td><td>1–3 h</td><td>4–12 h</td><td>12–18 h</td><td>NPH</td></tr>
+     <tr><td class="py-2 pr-3 font-semibold">Long-acting</td><td>1–2 h</td><td>Minimal / none</td><td>About 24 h</td><td>Glargine</td></tr>
+     <tr><td class="py-2 pr-3 font-semibold">Ultra-long</td><td>1–2 h</td><td>No pronounced peak</td><td>&gt;42 h</td><td>Degludec</td></tr>
+    </tbody>
+   </table>
+  </div>
+ </div>
+
+ <section class="space-y-3">
+  <div><h3 class="text-sm font-extrabold text-white">Insulin Types & Sample Illustrations</h3><p class="text-[10px] text-slate-400">Select a card to view additional clinical and nursing notes.</p></div>
+  <div id="insulin-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+<article class="insulin-card rounded-xl border border-slate-700/80 bg-slate-900/90 overflow-hidden" data-search="rapid-acting insulin lispro (humalog), aspart (novolog), glulisine (apidra) mealtime / bolus insulin; helps cover the rise in blood glucose after meals and may be used for correction doses as prescribed.">
+ <div class="p-3 sm:p-4">
+  <div class="flex items-start justify-between gap-2 mb-2">
+   <div><h4 class="text-sm sm:text-base font-extrabold text-white">Rapid-Acting Insulin</h4><span class="text-[9px] uppercase tracking-wide text-cyan-300">Insulin action profile</span></div>
+   <span class="rounded-full bg-slate-950 border border-slate-700 px-2 py-1 text-[9px] text-slate-300">RAPID</span>
+  </div>
+  <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-950"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMjUwIiB2aWV3Qm94PSIwIDAgNjQwIDI1MCI+CiAgICA8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InYiIHgxPSIwIiB4Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjhmYWZjIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2RiZWFmZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogICAgPHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIyNTAiIHJ4PSIyMCIgZmlsbD0iI2RiZWFmZSIvPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODUgMzApIj4KICAgICAgPHJlY3QgeD0iNDgiIHk9IjEyIiB3aWR0aD0iNjAiIGhlaWdodD0iMjQiIHJ4PSI2IiBmaWxsPSIjOTRhM2I4Ii8+CiAgICAgIDxyZWN0IHg9IjQwIiB5PSIzNCIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjEzMCIgcng9IjE4IiBmaWxsPSJ1cmwoI3YpIiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICA8cmVjdCB4PSI0OSIgeT0iNzciIHdpZHRoPSI1OCIgaGVpZ2h0PSI1NCIgcng9IjUiIGZpbGw9IiMwZWE1ZTkiLz4KICAgICAgPHRleHQgeD0iNzgiIHk9Ijk5IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5JTlNVTElOPC90ZXh0PgogICAgICA8dGV4dCB4PSI3OCIgeT0iMTE2IiBmb250LXNpemU9IjEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5WSUFMPC90ZXh0PgogICAgICA8cmVjdCB4PSI2MiIgeT0iMCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjE1IiByeD0iNCIgZmlsbD0iI2NiZDVlMSIvPgogICAgPC9nPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjYwIDcwKSByb3RhdGUoLTUgMTMwIDUwKSI+CiAgICAgIDxyZWN0IHg9IjAiIHk9IjI0IiB3aWR0aD0iMjc1IiBoZWlnaHQ9IjYwIiByeD0iMjAiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgICAgIDxyZWN0IHg9IjI4IiB5PSIzNCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiMwZWE1ZTkiLz4KICAgICAgPHJlY3QgeD0iMTk4IiB5PSIzMSIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQ2IiByeD0iOCIgZmlsbD0iI2NiZDVlMSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjMiLz4KICAgICAgPHJlY3QgeD0iMjM4IiB5PSIzOSIgd2lkdGg9IjI2IiBoZWlnaHQ9IjMwIiByeD0iNSIgZmlsbD0iIzk0YTNiOCIvPgogICAgICA8cGF0aCBkPSJNMjc1IDU0aDM0IiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgICAgIDxwYXRoIGQ9Ik0zMDkgNTRsMTUgLTVtLTE1IDVsMTUgNSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KICAgICAgPHRleHQgeD0iMTEzIiB5PSI1OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCI+SU5TVUxJTiBQRU48L3RleHQ+CiAgICA8L2c+CiAgICA8dGV4dCB4PSIzMjAiIHk9IjIxNSIgZm9udC1zaXplPSIyMSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSIjMGYxNzJhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5SYXBpZC1BY3RpbmcgSW5zdWxpbjwvdGV4dD4KICAgIDwvc3ZnPg==" alt="Illustrative insulin vial and pen for Rapid-Acting Insulin" class="block w-full h-auto" loading="lazy"/></div>
+  <div class="grid grid-cols-3 gap-2 mt-2">
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Onset</span><strong class="text-[10px] sm:text-[11px] text-white">10–30 minutes</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Peak</span><strong class="text-[10px] sm:text-[11px] text-white">30–90 minutes</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Duration</span><strong class="text-[10px] sm:text-[11px] text-white">3–5 hours</strong></div>
+  </div>
+  <div class="mt-2 rounded-lg border border-cyan-500/20 bg-cyan-950/20 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-cyan-300 mb-1">Common Use</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Mealtime / bolus insulin; helps cover the rise in blood glucose after meals and may be used for correction doses as prescribed.</p>
+  </div>
+  <div class="mt-2 rounded-lg bg-slate-950 border border-slate-800 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-slate-400 mb-1">Examples</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Lispro (Humalog), Aspart (NovoLog), Glulisine (Apidra)</p>
+  </div>
+  <button type="button" onclick="toggleInsulinDetail('rapid')" aria-expanded="false" class="mt-2 w-full flex items-center justify-between rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-[10px] font-bold text-slate-200 hover:border-cyan-400"><span>Clinical Notes & Nursing Considerations</span><i id="insulin-chevron-rapid" class="fa-solid fa-chevron-down text-cyan-300"></i></button>
+  <div id="insulin-detail-rapid" class="hidden mt-2 rounded-lg border border-slate-700 bg-slate-950/80 p-3">
+   <p class="text-[11px] text-slate-300 leading-relaxed">Usually given close to mealtime according to the specific product instructions and prescribed plan. Timing differs among products.</p>
+  </div>
+ </div>
+</article>
+<article class="insulin-card rounded-xl border border-slate-700/80 bg-slate-900/90 overflow-hidden" data-search="short-acting (regular) insulin regular insulin (humulin r, actrapid) meal-time insulin; regular insulin is also used for iv infusion in selected settings such as dka under a monitored hospital protocol.">
+ <div class="p-3 sm:p-4">
+  <div class="flex items-start justify-between gap-2 mb-2">
+   <div><h4 class="text-sm sm:text-base font-extrabold text-white">Short-Acting (Regular) Insulin</h4><span class="text-[9px] uppercase tracking-wide text-cyan-300">Insulin action profile</span></div>
+   <span class="rounded-full bg-slate-950 border border-slate-700 px-2 py-1 text-[9px] text-slate-300">SHORT</span>
+  </div>
+  <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-950"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMjUwIiB2aWV3Qm94PSIwIDAgNjQwIDI1MCI+CiAgICA8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InYiIHgxPSIwIiB4Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjhmYWZjIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2RiZWFmZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogICAgPHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIyNTAiIHJ4PSIyMCIgZmlsbD0iI2ZlZjNjNyIvPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODUgMzApIj4KICAgICAgPHJlY3QgeD0iNDgiIHk9IjEyIiB3aWR0aD0iNjAiIGhlaWdodD0iMjQiIHJ4PSI2IiBmaWxsPSIjOTRhM2I4Ii8+CiAgICAgIDxyZWN0IHg9IjQwIiB5PSIzNCIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjEzMCIgcng9IjE4IiBmaWxsPSJ1cmwoI3YpIiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICA8cmVjdCB4PSI0OSIgeT0iNzciIHdpZHRoPSI1OCIgaGVpZ2h0PSI1NCIgcng9IjUiIGZpbGw9IiNmNTllMGIiLz4KICAgICAgPHRleHQgeD0iNzgiIHk9Ijk5IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5JTlNVTElOPC90ZXh0PgogICAgICA8dGV4dCB4PSI3OCIgeT0iMTE2IiBmb250LXNpemU9IjEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5WSUFMPC90ZXh0PgogICAgICA8cmVjdCB4PSI2MiIgeT0iMCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjE1IiByeD0iNCIgZmlsbD0iI2NiZDVlMSIvPgogICAgPC9nPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjYwIDcwKSByb3RhdGUoLTUgMTMwIDUwKSI+CiAgICAgIDxyZWN0IHg9IjAiIHk9IjI0IiB3aWR0aD0iMjc1IiBoZWlnaHQ9IjYwIiByeD0iMjAiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgICAgIDxyZWN0IHg9IjI4IiB5PSIzNCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiNmNTllMGIiLz4KICAgICAgPHJlY3QgeD0iMTk4IiB5PSIzMSIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQ2IiByeD0iOCIgZmlsbD0iI2NiZDVlMSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjMiLz4KICAgICAgPHJlY3QgeD0iMjM4IiB5PSIzOSIgd2lkdGg9IjI2IiBoZWlnaHQ9IjMwIiByeD0iNSIgZmlsbD0iIzk0YTNiOCIvPgogICAgICA8cGF0aCBkPSJNMjc1IDU0aDM0IiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgICAgIDxwYXRoIGQ9Ik0zMDkgNTRsMTUgLTVtLTE1IDVsMTUgNSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KICAgICAgPHRleHQgeD0iMTEzIiB5PSI1OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCI+SU5TVUxJTiBQRU48L3RleHQ+CiAgICA8L2c+CiAgICA8dGV4dCB4PSIzMjAiIHk9IjIxNSIgZm9udC1zaXplPSIyMSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSIjMGYxNzJhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5TaG9ydC1BY3RpbmcgKFJlZ3VsYXIpIEluc3VsaW48L3RleHQ+CiAgICA8L3N2Zz4=" alt="Illustrative insulin vial and pen for Short-Acting (Regular) Insulin" class="block w-full h-auto" loading="lazy"/></div>
+  <div class="grid grid-cols-3 gap-2 mt-2">
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Onset</span><strong class="text-[10px] sm:text-[11px] text-white">30–60 minutes</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Peak</span><strong class="text-[10px] sm:text-[11px] text-white">2–4 hours</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Duration</span><strong class="text-[10px] sm:text-[11px] text-white">5–8 hours</strong></div>
+  </div>
+  <div class="mt-2 rounded-lg border border-cyan-500/20 bg-cyan-950/20 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-cyan-300 mb-1">Common Use</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Meal-time insulin; regular insulin is also used for IV infusion in selected settings such as DKA under a monitored hospital protocol.</p>
+  </div>
+  <div class="mt-2 rounded-lg bg-slate-950 border border-slate-800 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-slate-400 mb-1">Examples</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Regular insulin (Humulin R, Actrapid)</p>
+  </div>
+  <button type="button" onclick="toggleInsulinDetail('short')" aria-expanded="false" class="mt-2 w-full flex items-center justify-between rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-[10px] font-bold text-slate-200 hover:border-cyan-400"><span>Clinical Notes & Nursing Considerations</span><i id="insulin-chevron-short" class="fa-solid fa-chevron-down text-cyan-300"></i></button>
+  <div id="insulin-detail-short" class="hidden mt-2 rounded-lg border border-slate-700 bg-slate-950/80 p-3">
+   <p class="text-[11px] text-slate-300 leading-relaxed">Subcutaneous regular insulin is commonly administered before meals according to product instructions. IV use is a specific clinical protocol—not a self-administration route.</p>
+  </div>
+ </div>
+</article>
+<article class="insulin-card rounded-xl border border-slate-700/80 bg-slate-900/90 overflow-hidden" data-search="intermediate-acting insulin nph (humulin n, insulatard) basal/background insulin coverage; may be prescribed once or twice daily depending on the regimen.">
+ <div class="p-3 sm:p-4">
+  <div class="flex items-start justify-between gap-2 mb-2">
+   <div><h4 class="text-sm sm:text-base font-extrabold text-white">Intermediate-Acting Insulin</h4><span class="text-[9px] uppercase tracking-wide text-cyan-300">Insulin action profile</span></div>
+   <span class="rounded-full bg-slate-950 border border-slate-700 px-2 py-1 text-[9px] text-slate-300">INTERMEDIATE</span>
+  </div>
+  <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-950"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMjUwIiB2aWV3Qm94PSIwIDAgNjQwIDI1MCI+CiAgICA8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InYiIHgxPSIwIiB4Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjhmYWZjIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2RiZWFmZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogICAgPHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIyNTAiIHJ4PSIyMCIgZmlsbD0iI2VkZTlmZSIvPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODUgMzApIj4KICAgICAgPHJlY3QgeD0iNDgiIHk9IjEyIiB3aWR0aD0iNjAiIGhlaWdodD0iMjQiIHJ4PSI2IiBmaWxsPSIjOTRhM2I4Ii8+CiAgICAgIDxyZWN0IHg9IjQwIiB5PSIzNCIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjEzMCIgcng9IjE4IiBmaWxsPSJ1cmwoI3YpIiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICA8cmVjdCB4PSI0OSIgeT0iNzciIHdpZHRoPSI1OCIgaGVpZ2h0PSI1NCIgcng9IjUiIGZpbGw9IiM4YjVjZjYiLz4KICAgICAgPHRleHQgeD0iNzgiIHk9Ijk5IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5JTlNVTElOPC90ZXh0PgogICAgICA8dGV4dCB4PSI3OCIgeT0iMTE2IiBmb250LXNpemU9IjEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5WSUFMPC90ZXh0PgogICAgICA8cmVjdCB4PSI2MiIgeT0iMCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjE1IiByeD0iNCIgZmlsbD0iI2NiZDVlMSIvPgogICAgPC9nPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjYwIDcwKSByb3RhdGUoLTUgMTMwIDUwKSI+CiAgICAgIDxyZWN0IHg9IjAiIHk9IjI0IiB3aWR0aD0iMjc1IiBoZWlnaHQ9IjYwIiByeD0iMjAiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgICAgIDxyZWN0IHg9IjI4IiB5PSIzNCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiM4YjVjZjYiLz4KICAgICAgPHJlY3QgeD0iMTk4IiB5PSIzMSIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQ2IiByeD0iOCIgZmlsbD0iI2NiZDVlMSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjMiLz4KICAgICAgPHJlY3QgeD0iMjM4IiB5PSIzOSIgd2lkdGg9IjI2IiBoZWlnaHQ9IjMwIiByeD0iNSIgZmlsbD0iIzk0YTNiOCIvPgogICAgICA8cGF0aCBkPSJNMjc1IDU0aDM0IiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgICAgIDxwYXRoIGQ9Ik0zMDkgNTRsMTUgLTVtLTE1IDVsMTUgNSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KICAgICAgPHRleHQgeD0iMTEzIiB5PSI1OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCI+SU5TVUxJTiBQRU48L3RleHQ+CiAgICA8L2c+CiAgICA8dGV4dCB4PSIzMjAiIHk9IjIxNSIgZm9udC1zaXplPSIyMSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSIjMGYxNzJhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5JbnRlcm1lZGlhdGUtQWN0aW5nIEluc3VsaW48L3RleHQ+CiAgICA8L3N2Zz4=" alt="Illustrative insulin vial and pen for Intermediate-Acting Insulin" class="block w-full h-auto" loading="lazy"/></div>
+  <div class="grid grid-cols-3 gap-2 mt-2">
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Onset</span><strong class="text-[10px] sm:text-[11px] text-white">1–3 hours</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Peak</span><strong class="text-[10px] sm:text-[11px] text-white">4–12 hours</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Duration</span><strong class="text-[10px] sm:text-[11px] text-white">12–18 hours</strong></div>
+  </div>
+  <div class="mt-2 rounded-lg border border-cyan-500/20 bg-cyan-950/20 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-cyan-300 mb-1">Common Use</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Basal/background insulin coverage; may be prescribed once or twice daily depending on the regimen.</p>
+  </div>
+  <div class="mt-2 rounded-lg bg-slate-950 border border-slate-800 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-slate-400 mb-1">Examples</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">NPH (Humulin N, Insulatard)</p>
+  </div>
+  <button type="button" onclick="toggleInsulinDetail('intermediate')" aria-expanded="false" class="mt-2 w-full flex items-center justify-between rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-[10px] font-bold text-slate-200 hover:border-cyan-400"><span>Clinical Notes & Nursing Considerations</span><i id="insulin-chevron-intermediate" class="fa-solid fa-chevron-down text-cyan-300"></i></button>
+  <div id="insulin-detail-intermediate" class="hidden mt-2 rounded-lg border border-slate-700 bg-slate-950/80 p-3">
+   <p class="text-[11px] text-slate-300 leading-relaxed">NPH is a suspension and appears cloudy. Resuspend gently as instructed by the product labeling; follow the exact device/product instructions.</p>
+  </div>
+ </div>
+</article>
+<article class="insulin-card rounded-xl border border-slate-700/80 bg-slate-900/90 overflow-hidden" data-search="long-acting insulin glargine (lantus, basaglar) basal insulin for background glucose control, commonly administered once daily depending on the prescribed product and regimen.">
+ <div class="p-3 sm:p-4">
+  <div class="flex items-start justify-between gap-2 mb-2">
+   <div><h4 class="text-sm sm:text-base font-extrabold text-white">Long-Acting Insulin</h4><span class="text-[9px] uppercase tracking-wide text-cyan-300">Insulin action profile</span></div>
+   <span class="rounded-full bg-slate-950 border border-slate-700 px-2 py-1 text-[9px] text-slate-300">LONG</span>
+  </div>
+  <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-950"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMjUwIiB2aWV3Qm94PSIwIDAgNjQwIDI1MCI+CiAgICA8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InYiIHgxPSIwIiB4Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjhmYWZjIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2RiZWFmZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogICAgPHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIyNTAiIHJ4PSIyMCIgZmlsbD0iI2QxZmFlNSIvPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODUgMzApIj4KICAgICAgPHJlY3QgeD0iNDgiIHk9IjEyIiB3aWR0aD0iNjAiIGhlaWdodD0iMjQiIHJ4PSI2IiBmaWxsPSIjOTRhM2I4Ii8+CiAgICAgIDxyZWN0IHg9IjQwIiB5PSIzNCIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjEzMCIgcng9IjE4IiBmaWxsPSJ1cmwoI3YpIiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICA8cmVjdCB4PSI0OSIgeT0iNzciIHdpZHRoPSI1OCIgaGVpZ2h0PSI1NCIgcng9IjUiIGZpbGw9IiMxMGI5ODEiLz4KICAgICAgPHRleHQgeD0iNzgiIHk9Ijk5IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5JTlNVTElOPC90ZXh0PgogICAgICA8dGV4dCB4PSI3OCIgeT0iMTE2IiBmb250LXNpemU9IjEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5WSUFMPC90ZXh0PgogICAgICA8cmVjdCB4PSI2MiIgeT0iMCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjE1IiByeD0iNCIgZmlsbD0iI2NiZDVlMSIvPgogICAgPC9nPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjYwIDcwKSByb3RhdGUoLTUgMTMwIDUwKSI+CiAgICAgIDxyZWN0IHg9IjAiIHk9IjI0IiB3aWR0aD0iMjc1IiBoZWlnaHQ9IjYwIiByeD0iMjAiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgICAgIDxyZWN0IHg9IjI4IiB5PSIzNCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiMxMGI5ODEiLz4KICAgICAgPHJlY3QgeD0iMTk4IiB5PSIzMSIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQ2IiByeD0iOCIgZmlsbD0iI2NiZDVlMSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjMiLz4KICAgICAgPHJlY3QgeD0iMjM4IiB5PSIzOSIgd2lkdGg9IjI2IiBoZWlnaHQ9IjMwIiByeD0iNSIgZmlsbD0iIzk0YTNiOCIvPgogICAgICA8cGF0aCBkPSJNMjc1IDU0aDM0IiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgICAgIDxwYXRoIGQ9Ik0zMDkgNTRsMTUgLTVtLTE1IDVsMTUgNSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KICAgICAgPHRleHQgeD0iMTEzIiB5PSI1OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCI+SU5TVUxJTiBQRU48L3RleHQ+CiAgICA8L2c+CiAgICA8dGV4dCB4PSIzMjAiIHk9IjIxNSIgZm9udC1zaXplPSIyMSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSIjMGYxNzJhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5Mb25nLUFjdGluZyBJbnN1bGluPC90ZXh0PgogICAgPC9zdmc+" alt="Illustrative insulin vial and pen for Long-Acting Insulin" class="block w-full h-auto" loading="lazy"/></div>
+  <div class="grid grid-cols-3 gap-2 mt-2">
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Onset</span><strong class="text-[10px] sm:text-[11px] text-white">1–2 hours</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Peak</span><strong class="text-[10px] sm:text-[11px] text-white">Minimal or none</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Duration</span><strong class="text-[10px] sm:text-[11px] text-white">About 24 hours</strong></div>
+  </div>
+  <div class="mt-2 rounded-lg border border-cyan-500/20 bg-cyan-950/20 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-cyan-300 mb-1">Common Use</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Basal insulin for background glucose control, commonly administered once daily depending on the prescribed product and regimen.</p>
+  </div>
+  <div class="mt-2 rounded-lg bg-slate-950 border border-slate-800 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-slate-400 mb-1">Examples</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Glargine (Lantus, Basaglar)</p>
+  </div>
+  <button type="button" onclick="toggleInsulinDetail('long')" aria-expanded="false" class="mt-2 w-full flex items-center justify-between rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-[10px] font-bold text-slate-200 hover:border-cyan-400"><span>Clinical Notes & Nursing Considerations</span><i id="insulin-chevron-long" class="fa-solid fa-chevron-down text-cyan-300"></i></button>
+  <div id="insulin-detail-long" class="hidden mt-2 rounded-lg border border-slate-700 bg-slate-950/80 p-3">
+   <p class="text-[11px] text-slate-300 leading-relaxed">Glargine is generally considered peakless and should not be mixed in the same syringe with other insulins unless product-specific guidance explicitly allows it.</p>
+  </div>
+ </div>
+</article>
+<article class="insulin-card rounded-xl border border-slate-700/80 bg-slate-900/90 overflow-hidden" data-search="ultra-long-acting insulin degludec (tresiba) long-duration basal insulin coverage for relatively stable background glucose control.">
+ <div class="p-3 sm:p-4">
+  <div class="flex items-start justify-between gap-2 mb-2">
+   <div><h4 class="text-sm sm:text-base font-extrabold text-white">Ultra-Long-Acting Insulin</h4><span class="text-[9px] uppercase tracking-wide text-cyan-300">Insulin action profile</span></div>
+   <span class="rounded-full bg-slate-950 border border-slate-700 px-2 py-1 text-[9px] text-slate-300">ULTRA</span>
+  </div>
+  <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-950"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMjUwIiB2aWV3Qm94PSIwIDAgNjQwIDI1MCI+CiAgICA8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InYiIHgxPSIwIiB4Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjhmYWZjIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2RiZWFmZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogICAgPHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIyNTAiIHJ4PSIyMCIgZmlsbD0iI2ZjZTdmMyIvPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODUgMzApIj4KICAgICAgPHJlY3QgeD0iNDgiIHk9IjEyIiB3aWR0aD0iNjAiIGhlaWdodD0iMjQiIHJ4PSI2IiBmaWxsPSIjOTRhM2I4Ii8+CiAgICAgIDxyZWN0IHg9IjQwIiB5PSIzNCIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjEzMCIgcng9IjE4IiBmaWxsPSJ1cmwoI3YpIiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICA8cmVjdCB4PSI0OSIgeT0iNzciIHdpZHRoPSI1OCIgaGVpZ2h0PSI1NCIgcng9IjUiIGZpbGw9IiNlYzQ4OTkiLz4KICAgICAgPHRleHQgeD0iNzgiIHk9Ijk5IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5JTlNVTElOPC90ZXh0PgogICAgICA8dGV4dCB4PSI3OCIgeT0iMTE2IiBmb250LXNpemU9IjEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5WSUFMPC90ZXh0PgogICAgICA8cmVjdCB4PSI2MiIgeT0iMCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjE1IiByeD0iNCIgZmlsbD0iI2NiZDVlMSIvPgogICAgPC9nPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjYwIDcwKSByb3RhdGUoLTUgMTMwIDUwKSI+CiAgICAgIDxyZWN0IHg9IjAiIHk9IjI0IiB3aWR0aD0iMjc1IiBoZWlnaHQ9IjYwIiByeD0iMjAiIGZpbGw9IiNmOGZhZmMiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgICAgIDxyZWN0IHg9IjI4IiB5PSIzNCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiNlYzQ4OTkiLz4KICAgICAgPHJlY3QgeD0iMTk4IiB5PSIzMSIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQ2IiByeD0iOCIgZmlsbD0iI2NiZDVlMSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjMiLz4KICAgICAgPHJlY3QgeD0iMjM4IiB5PSIzOSIgd2lkdGg9IjI2IiBoZWlnaHQ9IjMwIiByeD0iNSIgZmlsbD0iIzk0YTNiOCIvPgogICAgICA8cGF0aCBkPSJNMjc1IDU0aDM0IiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgICAgIDxwYXRoIGQ9Ik0zMDkgNTRsMTUgLTVtLTE1IDVsMTUgNSIgc3Ryb2tlPSIjNjQ3NDhiIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KICAgICAgPHRleHQgeD0iMTEzIiB5PSI1OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCI+SU5TVUxJTiBQRU48L3RleHQ+CiAgICA8L2c+CiAgICA8dGV4dCB4PSIzMjAiIHk9IjIxNSIgZm9udC1zaXplPSIyMSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmaWxsPSIjMGYxNzJhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj5VbHRyYS1Mb25nLUFjdGluZyBJbnN1bGluPC90ZXh0PgogICAgPC9zdmc+" alt="Illustrative insulin vial and pen for Ultra-Long-Acting Insulin" class="block w-full h-auto" loading="lazy"/></div>
+  <div class="grid grid-cols-3 gap-2 mt-2">
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Onset</span><strong class="text-[10px] sm:text-[11px] text-white">1–2 hours</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Peak</span><strong class="text-[10px] sm:text-[11px] text-white">No pronounced peak</strong></div>
+   <div class="rounded-lg bg-slate-950 border border-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-500">Duration</span><strong class="text-[10px] sm:text-[11px] text-white">More than 42 hours</strong></div>
+  </div>
+  <div class="mt-2 rounded-lg border border-cyan-500/20 bg-cyan-950/20 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-cyan-300 mb-1">Common Use</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Long-duration basal insulin coverage for relatively stable background glucose control.</p>
+  </div>
+  <div class="mt-2 rounded-lg bg-slate-950 border border-slate-800 p-2.5">
+   <span class="block text-[9px] font-bold uppercase tracking-wide text-slate-400 mb-1">Examples</span>
+   <p class="text-[10px] sm:text-[11px] text-slate-200 leading-relaxed">Degludec (Tresiba)</p>
+  </div>
+  <button type="button" onclick="toggleInsulinDetail('ultra')" aria-expanded="false" class="mt-2 w-full flex items-center justify-between rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-[10px] font-bold text-slate-200 hover:border-cyan-400"><span>Clinical Notes & Nursing Considerations</span><i id="insulin-chevron-ultra" class="fa-solid fa-chevron-down text-cyan-300"></i></button>
+  <div id="insulin-detail-ultra" class="hidden mt-2 rounded-lg border border-slate-700 bg-slate-950/80 p-3">
+   <p class="text-[11px] text-slate-300 leading-relaxed">Degludec has a very long action profile. Dose timing and adjustments must follow the prescription and product information; never make changes independently.</p>
+  </div>
+ </div>
+</article></div>
+ </section>
+
+ <section class="rounded-xl border border-slate-700 bg-slate-900/80 p-3 space-y-2">
+  <h3 class="text-sm font-extrabold text-white">Nursing Safety Reminders</h3>
+  <ul class="list-disc pl-5 space-y-1 text-[10px] text-slate-300">
+   <li>Verify the insulin name, concentration, dose, route, timing and patient before administration; use an independent double-check when required by facility policy.</li>
+   <li>Monitor blood glucose and watch for hypoglycemia; coordinate meal timing with the prescribed insulin and the patient's ability to eat.</li>
+   <li>Do not interchange insulin products or concentrations without an authorized order and product-specific review.</li>
+   <li>Do not share insulin pens between patients, even when the needle is changed.</li>
+   <li>Follow manufacturer storage, in-use expiry and injection-site rotation instructions.</li>
+  </ul>
+ </section>
+
+ <section class="rounded-xl border border-amber-500/30 bg-amber-950/30 p-3">
+  <h3 class="text-xs font-bold text-amber-200 mb-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Important Clinical Note</h3>
+  <p class="text-[10px] text-amber-100/90 leading-relaxed">Onset, peak and duration are approximate teaching ranges for subcutaneous insulin. They vary by specific formulation, dose, injection site, technique and individual response. Always consult the current product information and prescribed plan. This reference is for education and does not provide patient-specific dosing advice.</p>
+ </section>
+ <p id="insulin-no-results" class="hidden text-center text-xs text-slate-400 py-5">No matching insulin reference found.</p>
+</div>
+
+<script>
+ function toggleInsulinDetail(kind) {
+  const detail=document.getElementById('insulin-detail-'+kind);
+  const icon=document.getElementById('insulin-chevron-'+kind);
+  const button=detail?detail.previousElementSibling:null;
+  if(!detail) return;
+  const opening=detail.classList.contains('hidden');
+  detail.classList.toggle('hidden',!opening);
+  if(button) button.setAttribute('aria-expanded',opening?'true':'false');
+  if(icon) icon.className=opening?'fa-solid fa-chevron-up text-cyan-300':'fa-solid fa-chevron-down text-cyan-300';
+ }
+ function filterInsulin(query) {
+  const q=(query||'').trim().toLowerCase();
+  const cards=Array.from(document.querySelectorAll('.insulin-card'));
+  let visible=0;
+  cards.forEach(card=>{
+   const match=!q||(card.getAttribute('data-search')||'').includes(q);
+   card.classList.toggle('hidden',!match);
+   if(match) visible++;
+  });
+  const empty=document.getElementById('insulin-no-results');
+  if(empty) empty.classList.toggle('hidden',visible>0);
+ }
+</script>
 
       </div>
     </div>
