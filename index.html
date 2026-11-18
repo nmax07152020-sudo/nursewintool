@@ -338,6 +338,51 @@
       }
     }
 
+    /* Header: keep every primary action visible on phones */
+    @media (max-width: 639px) {
+      header .max-w-7xl {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: .45rem !important;
+        padding-top: .5rem !important;
+        padding-bottom: .5rem !important;
+      }
+      header .max-w-7xl > div:first-child {
+        width: 100%;
+        min-width: 0;
+      }
+      header .max-w-7xl > div:first-child > div:last-child { min-width: 0; }
+      header .max-w-7xl > div:first-child h1 { font-size: .9rem !important; }
+      header .nw-header-actions {
+        width: 100%;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: .3rem !important;
+        flex-wrap: nowrap !important;
+      }
+      header .nw-header-actions > button,
+      header .nw-header-actions > a {
+        min-height: 32px;
+        padding-left: .42rem !important;
+        padding-right: .42rem !important;
+        font-size: 9px !important;
+      }
+      header .nw-header-actions > div[aria-label="NurseWin usage counters"] { gap: .25rem !important; }
+      header .nw-header-actions > div[aria-label="NurseWin usage counters"] > span { padding: .35rem .38rem !important; }
+      header .nw-download-app, header .nw-ios-guide { flex: 1 1 0; min-width: 0; }
+      header .nw-download-app span, header .nw-ios-guide span { display: inline !important; }
+      header .nw-header-actions .hidden.xs\:flex { display: none !important; }
+    }
+    @media (max-width: 380px) {
+      header .nw-header-actions { gap: .2rem !important; }
+      header .nw-header-actions > button,
+      header .nw-header-actions > a { padding-left: .32rem !important; padding-right: .32rem !important; font-size: 8px !important; }
+      header .nw-header-actions > div[aria-label="NurseWin usage counters"] > span { gap: .22rem !important; font-size: 8px !important; }
+      header .nw-download-app, header .nw-ios-guide { letter-spacing: -.02em; }
+    }
+
 </style>
 </head>
 
@@ -386,32 +431,38 @@
               NurseWin
             </h1>
             <span class="text-[9px] font-bold uppercase tracking-wider bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded border border-brand-500/30">Tool</span>
-            <button type="button" onclick="openSupportModal()" class="inline-flex items-center gap-1 rounded-md border border-amber-400/40 bg-amber-400/10 hover:bg-amber-400/20 text-amber-200 px-2 py-1 text-[9px] sm:text-[10px] font-bold whitespace-nowrap transition" title="Support NurseWin">
-              <i class="fa-solid fa-heart"></i><span>Support</span>
-            </button>
+            <div id="network-status" class="inline-flex items-center gap-1 rounded-md border border-slate-700 bg-slate-800/70 px-1.5 py-0.5 text-[9px] font-semibold whitespace-nowrap" title="Connection status">
+              <span id="network-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span id="network-label" class="text-emerald-300">Online</span>
+            </div>
           </div>
           <p class="text-[10px] text-slate-400 hidden sm:block">Designed for Clinical Reference & Fast Bedside Calculations.</p>
         </div>
       </div>
 
       <!-- Quick Header Actions -->
-      <div class="flex items-center gap-2">
+      <div class="nw-header-actions flex items-center gap-2">
+        <button type="button" onclick="openSupportModal()" class="inline-flex items-center justify-center gap-1 rounded-md border border-amber-400/40 bg-amber-400/10 hover:bg-amber-400/20 text-amber-200 px-2 py-1 text-[9px] sm:text-[10px] font-bold whitespace-nowrap transition" title="Support NurseWin">
+          <i class="fa-solid fa-heart"></i><span>Support</span>
+        </button>
+        <div class="inline-flex items-center gap-1" aria-label="NurseWin usage counters">
+          <span class="inline-flex items-center gap-1 rounded-md border border-slate-700 bg-slate-900/70 px-1.5 py-1 text-[9px] sm:text-[10px] text-slate-300 whitespace-nowrap" title="Total page visits">
+            <i class="fa-regular fa-eye text-brand-400"></i><span>Visits</span><strong id="nw-page-visits" class="font-mono text-white">—</strong>
+          </span>
+          <span class="inline-flex items-center gap-1 rounded-md border border-slate-700 bg-slate-900/70 px-1.5 py-1 text-[9px] sm:text-[10px] text-slate-300 whitespace-nowrap" title="APK download starts">
+            <i class="fa-brands fa-android text-brand-400"></i><span>APK</span><strong id="nw-apk-downloads" class="font-mono text-white">—</strong>
+          </span>
+        </div>
+        <a href="./nursewintool.apk" class="nw-download-app inline-flex shrink-0 items-center justify-center gap-1 bg-brand-600 hover:bg-brand-500 text-white px-2 py-1 rounded-lg border border-brand-500/50 text-[10px] font-bold whitespace-nowrap transition" title="Download NurseWin Android App" aria-label="Download NurseWin Android App">
+          <i class="fa-brands fa-android"></i><span>Download App</span>
+        </a>
+        <button type="button" onclick="openIOSGuide()" class="nw-ios-guide inline-flex shrink-0 items-center justify-center gap-1 bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded-lg border border-slate-700/60 text-[10px] font-semibold whitespace-nowrap transition" title="iOS Home Screen Guide">
+          <i class="fa-brands fa-apple text-slate-200"></i><span>iOS Guide</span>
+        </button>
         <div class="hidden xs:flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/60 text-[11px] text-slate-300">
           <i class="fa-regular fa-clock text-brand-400 text-xs"></i>
           <span id="live-time" class="font-mono font-medium">00:00:00</span>
         </div>
-        <div id="network-status" class="flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/60 text-[10px] font-semibold whitespace-nowrap" title="Connection status">
-          <span id="network-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          <span id="network-label" class="hidden sm:inline text-emerald-300">Online</span>
-        </div>
-        <button type="button" onclick="openIOSGuide()" class="inline-flex items-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded-lg border border-slate-700/60 text-[10px] font-semibold whitespace-nowrap transition" title="iOS Home Screen Guide">
-          <i class="fa-brands fa-apple text-slate-200"></i>
-          <span class="hidden sm:inline">iOS Guide</span>
-        </button>
-        <a href="./nursewintool.apk" class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-2.5 py-1 rounded-lg border border-brand-500/50 text-[10px] font-bold whitespace-nowrap transition" title="Download NurseWin Android App">
-          <i class="fa-brands fa-android"></i>
-          <span class="hidden sm:inline">Download App</span>
-        </a>
         <button onclick="showDashboard()" id="header-home-btn" class="hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
           <i class="fa-solid fa-grip text-brand-400"></i>
           <span>Dashboard</span>
@@ -609,7 +660,7 @@
           </div>
         </div>
 
-        <!-- Tool Card 12: Creatinine eGFR & Clearance -->
+        <!-- Tool Card 11: eGFR & Creatinine Clearance -->
         <div onclick="openTool('renal-calc')" class="tool-card glass-card rounded-xl p-2 sm:p-2.5 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="calc" data-keywords="creatinine egfr kidney filtration renal function creatinine clearance cockcroft gault ckd epi kidney">
           <div>
             <div class="flex items-center justify-between gap-1.5 mb-2">
@@ -631,7 +682,7 @@
           </div>
         </div>
 
-        <!-- Tool Card 11: Clinical Cheat Sheets -->
+        <!-- Tool Card 12: Clinical Reference -->
 
         <div onclick="openTool('cheatsheets')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="cheat sheets vitals age antidotes injections needle gauge mnemonics mona sample pqrst fast">
           <div>
@@ -650,7 +701,7 @@
           </div>
         </div>
 
-        <!-- Tool Card 12: IV Fluids Reference -->
+        <!-- Tool Card 13: IV Fluids Reference -->
         <div onclick="openTool('iv-fluids')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-brand-500/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="iv fluids intravenous fluids pnss normal saline sodium chloride lactated ringers plr d5lr d5imb d5nm dextrose electrolytes osmolarity tonicity">
           <div>
             <div class="flex items-center justify-between gap-1.5 mb-2">
@@ -669,7 +720,7 @@
         </div>
 
       
-        <!-- Tool Card 13: IV Cannula Reference -->
+        <!-- Tool Card 14: IV Cannula Reference -->
         <div onclick="openTool('iv-cannula')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-cyan-400/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="iv cannula peripheral intravenous catheter gauge sizes color coding flow rate nursing care phlebitis infiltration extravasation">
           <div>
             <div class="flex items-center justify-between gap-1.5 mb-2">
@@ -687,8 +738,8 @@
           </div>
         </div>
 
-        <!-- Tool Card 14: ECG Reading Reference -->
-        <div onclick="openTool('ecg-reading')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-cyan-400/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="ecg ekg electrocardiogram reading normal abnormal sinus rhythm bradycardia tachycardia atrial fibrillation flutter svt vt vf asystole st elevation">
+        <!-- Tool Card 15: ECG Reading Reference -->
+        <div onclick="openTool('ecg-reading')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-cyan-400/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="ecg ekg electrocardiogram reading normal abnormal sinus rhythm bradycardia tachycardia atrial fibrillation flutter svt vt vf asystole stemi nstemi acute coronary syndrome">
           <div>
             <div class="flex items-center justify-between gap-1.5 mb-2">
               <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -706,7 +757,7 @@
         </div>
 
  
-<!-- Tool Card 15: Types of Insulin -->
+<!-- Tool Card 16: Types of Insulin -->
 <div onclick="openTool('insulin-types')" class="tool-card glass-card rounded-xl p-2.5 sm:p-3 hover:border-cyan-400/50 hover:bg-slate-800/80 transition cursor-pointer flex flex-col justify-between group shadow-sm" data-category="ref" data-keywords="insulin types rapid acting short acting regular intermediate nph long acting glargine ultra long degludec onset peak duration basal bolus diabetes">
  <div>
   <div class="flex items-center justify-between gap-1.5 mb-2">
@@ -3387,6 +3438,79 @@
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') closeSupportModal();
     });
+  </script>
+
+
+  <!-- NurseWin Firebase visitor counters (separate project: nursewin-visitor-counter) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app-check.js";
+    import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBt5ORzmDRCzacaFa1rcCIcEQsgpdrKxOQ",
+      authDomain: "nursewin-visitor-counter.firebaseapp.com",
+      databaseURL: "https://nursewin-visitor-counter-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "nursewin-visitor-counter",
+      storageBucket: "nursewin-visitor-counter.firebasestorage.app",
+      messagingSenderId: "128635943135",
+      appId: "1:128635943135:web:dcf7e1a22ab93e0e78516a"
+    };
+    const appCheckSiteKey = "6LfmXiYuAAAAABZNldLW6js1f9gwO7EAPFaQeJjE";
+    const pageCounterEl = document.getElementById('nw-page-visits');
+    const apkCounterEl = document.getElementById('nw-apk-downloads');
+    const fmt = value => Number(value || 0).toLocaleString();
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
+        isTokenAutoRefreshEnabled: true
+      });
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+      await signInAnonymously(auth);
+
+      onValue(ref(db, 'totalPageVisits'), snap => {
+        if (pageCounterEl) pageCounterEl.textContent = fmt(snap.val());
+      }, error => console.warn('NurseWin page counter read failed:', error));
+      onValue(ref(db, 'totalApkDownloads'), snap => {
+        if (apkCounterEl) apkCounterEl.textContent = fmt(snap.val());
+      }, error => console.warn('NurseWin APK counter read failed:', error));
+
+      // Count one page visit per browser tab session, not every refresh.
+      const visitKey = 'nursewin-counter-visit-v1';
+      if (!sessionStorage.getItem(visitKey)) {
+        const result = await runTransaction(ref(db, 'totalPageVisits'), current => (Number(current) || 0) + 1);
+        if (result.committed) sessionStorage.setItem(visitKey, '1');
+      }
+
+      // Count download starts. This records a requested/initiated download,
+      // not proof that the APK transfer completed on the user's device.
+      document.addEventListener('click', async event => {
+        const link = event.target.closest('a[href="./nursewintool.apk"], a[href="nursewintool.apk"]');
+        if (!link || link.dataset.nwCounting === '1') return;
+        event.preventDefault();
+        link.dataset.nwCounting = '1';
+        try {
+          await runTransaction(ref(db, 'totalApkDownloads'), current => (Number(current) || 0) + 1);
+        } catch (error) {
+          console.warn('NurseWin APK counter increment failed:', error);
+        }
+        const downloadLink = document.createElement('a');
+        downloadLink.href = link.href;
+        downloadLink.download = 'nursewintool.apk';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        downloadLink.remove();
+        link.dataset.nwCounting = '0';
+      }, true);
+    } catch (error) {
+      console.warn('NurseWin Firebase counters unavailable:', error);
+      if (pageCounterEl) pageCounterEl.textContent = '—';
+      if (apkCounterEl) apkCounterEl.textContent = '—';
+    }
   </script>
 
 </body>
