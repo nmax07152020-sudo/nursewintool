@@ -1,6 +1,6 @@
 {
-    "version":  "1.0.3",
-    "url":  "https://github.com/nmax07152020-sudo/nursewintool/releases/download/ota-v1.0.3/ota-v1.0.3.zip",
-    "checksum":  "cd29791ce4d42b7185008fea67e858d4ea7066bf8bbb686d9ae47d792e91e9e7",
-    "notes":  "visitor"
+    "version":  "1.0.4",
+    "url":  "https://github.com/nmax07152020-sudo/nursewintool/releases/download/ota-v1.0.4/ota-v1.0.4.zip",
+    "checksum":  "a28390f56f106070b93962847af0e6f45782d3ed853d80ebefdebebc689d7617",
+    "notes":  "HTML OTA update 1.0.4"
 }
